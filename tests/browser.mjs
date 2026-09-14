@@ -9,12 +9,13 @@ const require = createRequire(import.meta.url);
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE_PATH || 'playwright');
 const root = fileURLToPath(new URL('../', import.meta.url));
 const output = path.join(root, 'test-results');
+const serveRoot = process.env.ARENA_SOURCE_SITE ? root : path.join(root, 'dist');
 await mkdir(output, { recursive: true });
-const types = { '.html': 'text/html', '.js': 'text/javascript', '.svg': 'image/svg+xml', '.png': 'image/png', '.webmanifest': 'application/manifest+json' };
+const types = { '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript', '.svg': 'image/svg+xml', '.png': 'image/png', '.webmanifest': 'application/manifest+json' };
 const server = http.createServer(async (request, response) => {
   const filename = new URL(request.url, 'http://localhost').pathname.replace(/^\//, '') || 'index.html';
   try {
-    const content = await readFile(path.join(root, 'dist', filename));
+    const content = await readFile(path.join(serveRoot, filename));
     response.writeHead(200, { 'Content-Type': types[path.extname(filename)] || 'text/plain', 'Cache-Control': 'no-cache' });
     response.end(content);
   } catch { response.writeHead(404); response.end('Not found'); }
@@ -50,6 +51,13 @@ try {
       page.on('pageerror', error => errors.push(error.message));
       await page.goto(url);
       await page.evaluate(() => navigator.serviceWorker.ready.then(() => true));
+      if (name === 'phone') {
+        // The first offline reload must work before a second online visit.
+        await context.setOffline(true);
+        await page.reload();
+        assert.equal(await page.locator('.hero-card').count(), 4, 'Initial offline visit failed to load the game');
+        await context.setOffline(false);
+      }
       await page.clock.install();
       await page.clock.runFor(100);
       await layoutFits(page, name);

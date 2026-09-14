@@ -1,6 +1,7 @@
 const CACHE_PREFIX = 'avengers-arena-';
-const CACHE = `${CACHE_PREFIX}v1`;
-const ASSETS = ['./', './index.html', './icon.svg', './icon-192.png', './icon-512.png', './manifest.webmanifest'];
+const CACHE = `${CACHE_PREFIX}v2`;
+// The build script replaces this list with the bundled output's assets.
+const ASSETS = ['./', './index.html', './icon.svg', './icon-192.png', './icon-512.png', './manifest.webmanifest', './styles.css', './src/engine.js', './src/art.js', './src/game.js'];
 
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(ASSETS)));

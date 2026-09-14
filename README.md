@@ -4,6 +4,12 @@ A small mobile browser fighting game. Pick Iron Man, Captain America, Thor, or H
 
 Touch controls support moving and attacking at the same time. Each hero has a different special move, health, speed, and attack strength. Three difficulty levels, 75-second rounds, combos, guard, optional sound, pause, and rematches are included.
 
+## Play online
+
+[Play Avengers Arena](https://divyankavdia.github.io/tishaan/) on your phone or desktop.
+
+GitHub Pages publishes the repository root from `main`. Merged changes publish automatically through the repository's Pages build and deployment. The `.nojekyll` file keeps the game assets unchanged, and the service worker caches the source modules and styles for offline play. The portable `dist/` build caches its bundled assets instead.
+
 ## Play locally
 
 With Node.js 20 or newer:
