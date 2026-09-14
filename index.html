@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#101217">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="Pick an Avenger. Take on the arena. A pocket-sized, touch-controlled browser fighting game.">
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./icon-192.png">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="stylesheet" href="./styles.css">
+  <title>Avengers Arena · Pocket Edition</title>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Avengers Arena home" id="home-link"><span class="brand-mark" aria-hidden="true">A<span></span></span><span>AVENGERS<span class="brand-sub">ARENA</span></span></a>
+      <div class="top-actions">
+        <span class="edition"><i></i> POCKET EDITION</span>
+        <button class="icon-button" id="sound-button" aria-label="Enable sound" aria-pressed="false" title="Toggle sound"><span id="sound-symbol" aria-hidden="true">♪</span><span id="sound-label">Sound off</span></button>
+        <button class="icon-button help-button" id="help-button" aria-label="How to play">?</button>
+      </div>
+    </header>
+
+    <main>
+      <section id="select-screen" class="select-screen" aria-labelledby="select-title">
+        <div class="setup-grid">
+          <div class="intro">
+            <div class="eyebrow"><span class="tiny-line"></span> FOUR HEROES. ONE ARENA.</div>
+            <h1 id="select-title">PICK YOUR<br><span>POWER.</span></h1>
+            <p>Big heroes. Pocket-sized battles.<br>Choose your Avenger and take the rooftop.</p>
+            <div class="game-facts"><span><i></i> SOLO VS AI</span><span>75-SECOND ROUNDS</span></div>
+          </div>
+          <div class="hero-preview" id="hero-preview">
+            <div class="preview-grid" aria-hidden="true"></div>
+            <div class="preview-orbit orbit-one" aria-hidden="true"></div><div class="preview-orbit orbit-two" aria-hidden="true"></div>
+            <span class="preview-index" aria-hidden="true">01 / 04</span>
+            <div class="hero-copy"><span class="hero-kicker" id="hero-kicker">THE ARMORED AVENGER</span><h2 id="hero-name">Iron Man</h2><span class="hero-special" id="hero-special">Repulsor blast</span><div class="hero-stats" id="hero-stats"></div></div>
+            <canvas id="hero-art" width="420" height="380" aria-hidden="true"></canvas>
+            <span class="preview-caption">AVENGERS INITIATIVE <span>ACTIVE</span></span>
+          </div>
+        </div>
+
+        <div class="roster-heading"><h2>Choose your fighter</h2><span>ALL HEROES UNLOCKED <span aria-hidden="true">↙</span></span></div>
+        <div class="roster" id="roster" role="group" aria-label="Choose your fighter"></div>
+
+        <div class="launch-panel">
+          <div class="match-options">
+            <label for="difficulty">DIFFICULTY<select id="difficulty"><option value="recruit">Recruit · easy</option><option value="hero" selected>Hero · normal</option><option value="avenger">Avenger · hard</option></select></label>
+            <label for="opponent">OPPONENT<select id="opponent"><option value="random">Surprise me</option><option value="ironman">Iron Man</option><option value="captain">Captain America</option><option value="thor">Thor</option><option value="hulk">Hulk</option></select></label>
+          </div>
+          <button class="primary-button enter-button" id="start-button"><span>ENTER THE ARENA</span><span aria-hidden="true">↗</span></button>
+        </div>
+        <p class="setup-note"><span class="touch-note">Made for your thumbs.</span> No downloads. No sign-in. Just battle.</p>
+      </section>
+
+      <section id="game-screen" class="game-screen" aria-label="Battle arena" hidden>
+        <div class="arena-topline"><span><i></i> STARK TOWER <span class="arena-location">/ TRAINING DECK 04</span></span><div><button id="fullscreen-button" class="text-button">Full screen</button><button id="pause-button" class="text-button" aria-label="Pause game">Ⅱ <span>Pause</span></button></div></div>
+        <div class="hud">
+          <div class="fighter-hud player-hud"><div class="fighter-label"><span id="player-name">IRON MAN</span><small>YOU</small></div><div class="health-track" role="progressbar" id="player-health" aria-label="Your health" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><div class="health-fill" id="player-health-fill"></div></div><div class="energy-line"><div class="energy-track"><div id="player-energy-fill"></div></div><span id="player-energy-label">SPECIAL READY</span></div></div>
+          <div class="timer"><strong id="timer">75</strong><span>ROUND 01</span></div>
+          <div class="fighter-hud enemy-hud"><div class="fighter-label"><span id="enemy-name">THOR</span><small>CPU</small></div><div class="health-track" role="progressbar" id="enemy-health" aria-label="Opponent health" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><div class="health-fill" id="enemy-health-fill"></div></div><div class="energy-line"><div class="energy-track"><div id="enemy-energy-fill"></div></div><span>OPPONENT</span></div></div>
+        </div>
+        <div class="game-surface" id="game-surface">
+          <canvas id="arena" width="1120" height="560" tabindex="0" aria-label="Avengers fighting arena. Use the controls below, or arrow keys to move, space to jump, J to strike, K for a special move, and L to guard.">This game needs a browser that supports HTML canvas.</canvas>
+          <div class="arena-vignette" aria-hidden="true"></div>
+          <div class="announcement" id="announcement" aria-live="polite"><span>GET READY</span><strong>3</strong></div>
+          <div class="overlay" id="pause-overlay" hidden><div class="overlay-card"><div class="eyebrow">TAKE A BREATHER</div><h2>Battle paused.</h2><p>Your arena will be right here.</p><button id="resume-button" class="primary-button">BACK TO BATTLE <span aria-hidden="true">↗</span></button><button id="quit-button" class="secondary-button">Change fighter</button></div></div>
+          <div class="overlay" id="result-overlay" hidden><div class="overlay-card"><span class="result-mark" id="result-mark" aria-hidden="true">★</span><div class="eyebrow" id="result-reason">KNOCKOUT</div><h2 id="result-title">Victory.</h2><p id="result-description"></p><div class="result-stats"><span><strong id="result-hits">0</strong>HITS LANDED</span><span><strong id="result-time">0s</strong>BATTLE TIME</span></div><button id="rematch-button" class="primary-button">REMATCH <span aria-hidden="true">↗</span></button><button id="change-button" class="secondary-button">Choose another Avenger</button></div></div>
+        </div>
+        <div class="control-deck" id="control-deck">
+          <div class="move-controls"><button class="touch-button jump-button" data-input="jump" aria-label="Jump"><span aria-hidden="true">↑</span><small>JUMP</small></button><div class="direction-buttons"><button class="touch-button direction-button" data-input="left" aria-label="Move left"><span aria-hidden="true">←</span></button><button class="touch-button direction-button" data-input="right" aria-label="Move right"><span aria-hidden="true">→</span></button></div><span class="control-caption">MOVE</span></div>
+          <div class="control-hint"><span class="key-hint"><kbd>←</kbd><kbd>→</kbd> MOVE <kbd>SPACE</kbd> JUMP</span><span class="key-hint"><kbd>J</kbd> STRIKE <kbd>K</kbd> SPECIAL <kbd>L</kbd> GUARD</span><span class="mobile-hint">Hold to move.<br>Tap to make an impact.</span></div>
+          <div class="action-controls"><button class="touch-button guard-button" data-input="guard" aria-label="Hold to guard"><span aria-hidden="true">◇</span><small>GUARD</small></button><button class="touch-button strike-button" data-input="attack" aria-label="Strike"><span aria-hidden="true">✦</span><small>STRIKE</small></button><button class="touch-button special-button" data-input="special" id="special-button" aria-label="Use special move"><span aria-hidden="true">ϟ</span><small>SPECIAL</small></button></div>
+        </div>
+        <div class="battle-bottom"><span id="move-tip">REPULSOR BLAST · A ranged energy shot.</span><span class="keyboard-note">ESC TO PAUSE</span></div>
+      </section>
+    </main>
+    <footer id="footer"><span>A LITTLE GAME. A LEGENDARY LINEUP.</span><span>Unofficial fan game · Marvel characters belong to their owners.</span></footer>
+  </div>
+
+  <dialog id="help-dialog" aria-labelledby="help-title">
+    <button id="close-help" class="dialog-close" aria-label="Close instructions">×</button>
+    <div class="eyebrow">THE BRIEFING</div><h2 id="help-title">Small screen.<br>Super moves.</h2>
+    <p>Beat the AI opponent before your health runs out. If the timer ends, the higher remaining health percentage wins.</p>
+    <div class="help-rows"><div><span>← →</span><p><strong>Close the distance</strong>Hold the arrows to move. Tap ↑ to jump over attacks.</p></div><div><span>✦</span><p><strong>Make an impact</strong>Strike up close. Chain three strikes for extra damage.</p></div><div><span>ϟ</span><p><strong>Go super</strong>Specials spend energy. Energy refills as you fight.</p></div><div><span>◇</span><p><strong>Keep your guard up</strong>Hold guard to reduce incoming damage. Blocking costs energy.</p></div></div>
+    <p class="help-keyboard">Keyboard: arrows or A/D to move · space/W to jump · J strike · K special · L guard · Esc pause.</p>
+    <p class="install-hint">On your phone: use your browser’s “Add to Home Screen” option for a full-screen app experience. Play once online to make the hosted game available offline.</p>
+    <button id="got-it-button" class="primary-button">GOT IT. LET’S GO. <span aria-hidden="true">↗</span></button>
+  </dialog>
+  <div id="live-status" class="sr-only" role="status" aria-live="polite"></div>
+  <script type="module" src="./src/game.js"></script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+import { readFile, writeFile, mkdir, copyFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
+import path from 'node:path';
+
+const root = fileURLToPath(new URL('../', import.meta.url));
+const read = file => readFile(path.join(root, file), 'utf8');
+await mkdir(path.join(root, 'dist'), { recursive: true });
+const scripts = await Promise.all(['src/engine.js', 'src/art.js', 'src/game.js'].map(read));
+const bundled = scripts.map(script => script.replace(/^import .*?;\s*$/gm, '').replace(/^export /gm, '')).join('\n');
+let html = await read('index.html');
+const css = await read('styles.css');
+html = html.replace('<link rel="stylesheet" href="./styles.css">', () => `<style>\n${css}\n</style>`);
+html = html.replace('<script type="module" src="./src/game.js"></script>', () => `<script type="module">\n${bundled}\n</script>`);
+await writeFile(path.join(root, 'dist/index.html'), html);
+const assets = ['icon.svg', 'icon-192.png', 'icon-512.png', 'manifest.webmanifest'];
+for (const file of assets) await copyFile(path.join(root, file), path.join(root, 'dist', file));
+const cachedAssets = ['./', './index.html', ...assets.map(file => `./${file}`)];
+const worker = (await read('sw.js')).replace(/^const ASSETS = .*;$/m, `const ASSETS = ${JSON.stringify(cachedAssets)};`);
+await writeFile(path.join(root, 'dist/sw.js'), worker);
+console.log(`Built dist/index.html (${Math.round(Buffer.byteLength(html) / 1024)} KB). Opens directly in a browser, with no dependencies.`);
