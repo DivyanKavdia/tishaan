@@ -90,6 +90,49 @@ surprise.hidden = cards.length === 0;
 document.getElementById('library-tools').hidden = false;
 filterGames(false);
 
+// Android PWA install experience. Chrome fires beforeinstallprompt only when the
+// site passes its installability checks, so the button appears only when useful.
+let installPrompt = null;
+const runningStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+const installButton = document.createElement('button');
+installButton.type = 'button';
+installButton.id = 'install-app';
+installButton.textContent = 'Install app';
+installButton.setAttribute('aria-label', "Install Tishaan's Game Zone app");
+installButton.hidden = true;
+Object.assign(installButton.style, {
+  border: '1px solid rgba(255,255,255,.2)',
+  background: '#f3d34a',
+  color: '#15120a',
+  borderRadius: '999px',
+  padding: '10px 14px',
+  fontWeight: '900',
+  cursor: 'pointer'
+});
+const header = document.querySelector('.site-header');
+if (header) header.append(installButton);
+
+window.addEventListener('beforeinstallprompt', event => {
+  event.preventDefault();
+  installPrompt = event;
+  if (!runningStandalone) installButton.hidden = false;
+});
+
+installButton.addEventListener('click', async () => {
+  if (!installPrompt) return;
+  installButton.disabled = true;
+  await installPrompt.prompt();
+  await installPrompt.userChoice;
+  installPrompt = null;
+  installButton.hidden = true;
+  installButton.disabled = false;
+});
+
+window.addEventListener('appinstalled', () => {
+  installPrompt = null;
+  installButton.hidden = true;
+});
+
 if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' }).catch(() => {});
