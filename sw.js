@@ -1,44 +1,82 @@
 const CACHE_PREFIX = 'tishaan-game-zone-';
-const CACHE = 'tishaan-game-zone-monterra-1';
+const CACHE = 'tishaan-game-zone-2026-09-15-monterra-v3';
 const BASE = new URL('./', self.location.href);
-const ASSETS = ['./', './index.html', './assets/hub.css', './assets/hub.js', './assets/controller.svg', './games/catalog.json', './icon.svg', './icon-192.png', './icon-512.png', './manifest.webmanifest', './games/monterra/icon.svg', './games/monterra/cover.svg'];
+const CORE = [
+  './',
+  './index.html',
+  './assets/hub.css',
+  './assets/hub.js',
+  './assets/controller.svg',
+  './games/catalog.json',
+  './icon.svg',
+  './manifest.webmanifest'
+];
 
 self.addEventListener('install', event => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE);
-    await cache.addAll(ASSETS);
-    const catalog = await (await cache.match('./games/catalog.json')).json();
-    await cache.addAll([...new Set(catalog.flatMap(game => [game.icon, game.cover]))]);
+    await cache.addAll(CORE);
     await self.skipWaiting();
   })());
 });
 
 self.addEventListener('activate', event => {
   event.waitUntil((async () => {
-    const obsolete = (await caches.keys()).filter(key => (key.startsWith(CACHE_PREFIX) && key !== CACHE) || ['avengers-arena-v1', 'avengers-arena-v2'].includes(key));
-    await Promise.all(obsolete.map(key => caches.delete(key)));
+    const keys = await caches.keys();
+    await Promise.all(keys.filter(key => key.startsWith(CACHE_PREFIX) && key !== CACHE).map(key => caches.delete(key)));
     await self.clients.claim();
   })());
 });
 
+async function networkFirst(request) {
+  const cache = await caches.open(CACHE);
+  try {
+    const response = await fetch(request, { cache: 'no-store' });
+    if (response.ok) await cache.put(request, response.clone());
+    return response;
+  } catch {
+    const cached = await cache.match(request);
+    return cached || Response.error();
+  }
+}
+
+async function staleWhileRevalidate(request, event) {
+  const cache = await caches.open(CACHE);
+  const cached = await cache.match(request);
+  const update = fetch(request).then(response => {
+    if (response.ok) cache.put(request, response.clone());
+    return response;
+  }).catch(() => null);
+  if (cached) {
+    event.waitUntil(update);
+    return cached;
+  }
+  return (await update) || Response.error();
+}
+
 self.addEventListener('fetch', event => {
-  const url = new URL(event.request.url);
-  if (event.request.method !== 'GET' || url.origin !== BASE.origin) return;
-  if (url.pathname.startsWith(`${BASE.pathname}games/`) && event.request.mode === 'navigate') return;
-  event.respondWith((async () => {
-    const cache = await caches.open(CACHE);
-    const cached = await cache.match(event.request);
-    try {
-      const response = await fetch(event.request);
-      if (response.ok) {
-        const copy = response.clone();
-        event.waitUntil(cache.put(event.request, copy));
-      }
-      return response;
-    } catch {
-      if (cached) return cached;
-      if (event.request.mode === 'navigate' && [BASE.pathname, `${BASE.pathname}index.html`].includes(url.pathname)) return (await cache.match('./index.html')) || Response.error();
-      return Response.error();
-    }
-  })());
+  const request = event.request;
+  if (request.method !== 'GET') return;
+  const url = new URL(request.url);
+  if (url.origin !== BASE.origin) return;
+
+  // Game pages always come from the network first so newly deployed games and
+  // gameplay fixes are never trapped behind an old app-shell cache.
+  if (url.pathname.startsWith(`${BASE.pathname}games/`) && request.mode === 'navigate') {
+    event.respondWith(networkFirst(request));
+    return;
+  }
+
+  // The shell, scripts and catalog are update-sensitive.
+  const updateSensitive = request.mode === 'navigate' ||
+    url.pathname.endsWith('/index.html') ||
+    url.pathname.endsWith('/assets/hub.js') ||
+    url.pathname.endsWith('/games/catalog.json') ||
+    url.pathname.endsWith('/sw.js');
+  if (updateSensitive) {
+    event.respondWith(networkFirst(request));
+    return;
+  }
+
+  event.respondWith(staleWhileRevalidate(request, event));
 });
