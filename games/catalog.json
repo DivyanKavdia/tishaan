@@ -1,0 +1,14 @@
+[
+  {
+    "slug": "avengers-arena",
+    "name": "Avengers Arena",
+    "description": "Four legendary heroes. One rooftop showdown. Pick your Avenger and unleash your superpower.",
+    "category": "Action",
+    "players": "Solo vs AI",
+    "detail": "75-second battles",
+    "icon": "./games/avengers-arena/icon.svg",
+    "cover": "./games/avengers-arena/cover.png",
+    "href": "./games/avengers-arena/",
+    "featured": true
+  }
+]

@@ -1,13 +1,13 @@
 {
   "id": "./",
-  "name": "Tishaan’s Game Zone",
-  "short_name": "Game Zone",
-  "description": "Pocket-sized adventures. Pick a game and play instantly.",
+  "name": "Avengers Arena",
+  "short_name": "Arena",
+  "description": "Pocket-sized superhero battles. A mobile browser fighting game.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#101019",
-  "theme_color": "#101019",
+  "background_color": "#101217",
+  "theme_color": "#101217",
   "icons": [
     { "src": "./icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
     { "src": "./icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" },

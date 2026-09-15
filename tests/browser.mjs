@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
-import { readFile, mkdir } from 'node:fs/promises';
+import { readFile, mkdir, stat } from 'node:fs/promises';
 import http from 'node:http';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -15,13 +15,15 @@ const types = { '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascrip
 const server = http.createServer(async (request, response) => {
   const filename = new URL(request.url, 'http://localhost').pathname.replace(/^\//, '') || 'index.html';
   try {
-    const content = await readFile(path.join(serveRoot, filename));
-    response.writeHead(200, { 'Content-Type': types[path.extname(filename)] || 'text/plain', 'Cache-Control': 'no-cache' });
+    const requested = path.join(serveRoot, filename);
+    const target = (await stat(requested)).isDirectory() ? path.join(requested, 'index.html') : requested;
+    const content = await readFile(target);
+    response.writeHead(200, { 'Content-Type': types[path.extname(target)] || 'text/plain', 'Cache-Control': 'no-cache' });
     response.end(content);
   } catch { response.writeHead(404); response.end('Not found'); }
 });
 await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
-const url = `http://127.0.0.1:${server.address().port}`;
+const url = `http://127.0.0.1:${server.address().port}/games/avengers-arena/`;
 const launchOptions = {
   headless: true,
   ...(process.env.ARENA_CHROMIUM_EXECUTABLE ? { executablePath: process.env.ARENA_CHROMIUM_EXECUTABLE } : {}),
