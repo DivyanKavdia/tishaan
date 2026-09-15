@@ -1932,3 +1932,13 @@ dialog .primary-button {
     transition:none!important;
   }
 }
+
+.zone-link { display:inline-flex; align-items:center; gap:5px; min-height:44px; color:var(--gold); font-size:12px; white-space:nowrap; }
+.zone-link span { font-size:24px; line-height:1; }
+@media(max-width:600px) {
+  .top-actions { gap:10px; }
+  .zone-link { font-size:10px; gap:3px; }
+  #sound-label { display:none; }
+  .top-actions .icon-button { min-width:32px; padding:5px; }
+}
+@media(max-width:360px) { .topbar { gap:8px; } .top-actions { gap:5px; } }

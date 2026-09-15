@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { HEROES, createMatch, stepMatch } from '../src/engine.js';
+import { HEROES, createMatch, stepMatch } from '../games/avengers-arena/src/engine.js';
 
 function practice(hero = 'ironman', opponent = 'captain') {
   const match = createMatch({ hero, opponent });
