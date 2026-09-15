@@ -1,0 +1,31 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {FAMILIES,member,freshState,normalize,nameOf,maxHp,xpNeeded,canEvolve,gainXp,evolve,damage,captureChance,healthyIndex,effectiveness} from '../games/monterra/core.js';
+import {walkable,height,GUARDIANS} from '../games/monterra/world.js';
+
+test('five distinct families provide fifteen uniquely named forms',()=>{
+ assert.equal(FAMILIES.length,5);assert.equal(new Set(FAMILIES.flatMap(f=>f.names)).size,15);
+ for(let family=0;family<5;family++)for(let stage=0;stage<3;stage++)assert.ok(nameOf(member(family,12,stage)));
+});
+test('starter state has usable health and supplies',()=>{const s=freshState(2);assert.equal(s.team[0].family,2);assert.equal(s.team[0].hp,maxHp(s.team[0]));assert.ok(s.orbs>0&&s.potions>0);});
+test('evolution is not allowed before level seven',()=>{const m=member(0,6);assert.equal(canEvolve(m),false);assert.equal(evolve(m),false);assert.equal(m.stage,0);});
+test('first evolution changes name, form and health at level seven',()=>{const m=member(0,7);const old=maxHp(m);assert.equal(evolve(m),true);assert.equal(nameOf(m),'Pyrolynx');assert.equal(m.stage,1);assert.ok(m.hp>old);});
+test('second evolution unlocks at level twelve',()=>{const m=member(3,11,1);assert.equal(evolve(m),false);m.level=12;assert.equal(evolve(m),true);assert.equal(nameOf(m),'Thundrake');});
+test('final-form evolution is idempotent',()=>{const m=member(4,50,2);assert.equal(evolve(m),false);assert.equal(m.stage,2);});
+test('all five families evolve through both stages',()=>{for(let i=0;i<5;i++){const m=member(i,12);assert.equal(evolve(m),true);assert.equal(evolve(m),true);assert.equal(evolve(m),false);assert.equal(m.stage,2);}});
+test('XP can advance multiple levels without discarding the remainder',()=>{const m=member();const a=xpNeeded(m);m.level++;const b=xpNeeded(m);m.level--;assert.equal(gainXp(m,a+b+3),2);assert.equal(m.level,7);assert.equal(m.xp,3);assert.equal(m.hp,maxHp(m));});
+test('level cap prevents runaway saved progress',()=>{const m=member(0,49);gainXp(m,1e6);assert.equal(m.level,50);assert.ok(m.xp<xpNeeded(m));});
+test('flame has an advantage over leaf and a disadvantage against tide',()=>{assert.equal(effectiveness(member(0),member(1)),1.5);assert.equal(effectiveness(member(0),member(2)),.75);});
+test('signature attacks exceed normal damage with the same roll',()=>{const a=member(2),b=member(1);assert.ok(damage(a,b,true,()=>.5)>damage(a,b,false,()=>.5));});
+test('combat always does positive damage',()=>{for(let i=0;i<5;i++)for(let j=0;j<5;j++)assert.ok(damage(member(i,1),member(j,50),false,()=>0)>0);});
+test('capture chances increase as target health falls',()=>{const m=member(2,8);const full=captureChance(m);m.hp=1;assert.ok(captureChance(m)>full);assert.ok(captureChance(m)<1);});
+test('evolved wild creatures are more difficult to catch',()=>assert.ok(captureChance(member(0,8,1))<captureChance(member(0,8,0))));
+test('missing or invalid save files are rejected safely',()=>{for(const value of [null,{},0,'bad',{team:[]},{team:[{family:99}]}])assert.equal(normalize(value),null);});
+test('mixed corrupt members do not invalidate healthy members',()=>{const s=normalize({team:[null,{},member(2)]});assert.equal(s.team.length,1);assert.equal(s.team[0].family,2);});
+test('save normalization bounds all resource and state fields',()=>{const s=normalize({team:[{family:1,level:1e8,stage:9,xp:1e8,hp:-10}],active:100,orbs:-1,potions:Infinity,position:{x:Infinity,z:-Infinity},badges:[0,0,1,19,'2']});assert.equal(s.team[0].level,50);assert.equal(s.team[0].stage,2);assert.equal(s.team[0].hp,0);assert.equal(s.active,0);assert.equal(s.orbs,0);assert.equal(s.potions,9999);assert.deepEqual(s.badges,[0,1]);assert.equal(s.position.x,31);});
+test('version-two saves migrate without deleting creatures',()=>{const s=normalize({team:[{family:3,stage:1,level:9,xp:22}],position:{x:8,y:8},orbs:7,wins:4,catches:2});assert.equal(nameOf(s.team[0]),'Stormcat');assert.equal(s.team[0].hp,maxHp(s.team[0]));assert.equal(s.orbs,7);assert.equal(s.position.z,8);});
+test('save serialization and rehydration preserve progression',()=>{const s=freshState();s.team.push(member(3,12,2));s.active=1;s.badges=[0,1];s.catches=2;s.orbs=19;assert.deepEqual(normalize(JSON.parse(JSON.stringify(s))),s);});
+test('team save has a bounded size',()=>assert.equal(normalize({team:Array.from({length:100},()=>member())}).team.length,60));
+test('healthy companion lookup excludes fainted members',()=>{const s=freshState();s.team[0].hp=0;assert.equal(healthyIndex(s),-1);s.team.push(member(1));assert.equal(healthyIndex(s),1);});
+test('camp and all guardian gates are walkable',()=>{assert.ok(walkable(0,8));for(const g of GUARDIANS)assert.ok(walkable(g.x,g.z));});
+test('lake and distant ocean cannot be entered',()=>{assert.equal(walkable(19,0),false);assert.equal(walkable(50,50),false);assert.ok(height(19,0)<0);});

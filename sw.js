@@ -1,5 +1,5 @@
 const CACHE_PREFIX = 'tishaan-game-zone-';
-const CACHE = 'tishaan-game-zone-2026-09-15-monterra-v3';
+const CACHE = 'tishaan-game-zone-monterra-3d-3.0.0';
 const BASE = new URL('./', self.location.href);
 const CORE = [
   './',

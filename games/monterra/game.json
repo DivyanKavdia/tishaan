@@ -1,0 +1,10 @@
+{
+  "name": "Monterra Wilds",
+  "description": "Explore a sunlit 3D island, befriend roaming creatures, battle three guardians and unlock fifteen creature forms.",
+  "category": "Adventure",
+  "players": "Solo",
+  "detail": "3D world | Catch, battle & evolve",
+  "icon": "icon.svg",
+  "cover": "cover.svg",
+  "featured": true
+}
