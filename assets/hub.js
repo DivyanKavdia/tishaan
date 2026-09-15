@@ -1,9 +1,60 @@
+const grid = document.getElementById('game-grid');
+
+// New games can be registered here without reshaping the landing page markup.
+const extraGames = [
+  {
+    slug: 'dragon-keep',
+    title: 'Dragon Keep TD',
+    genre: 'Strategy',
+    mode: 'Tower Defense',
+    badge: 'NEW CHALLENGE',
+    description: 'Build arrow, frost and cannon towers to protect the Dragon Crystal from ten waves of monsters.',
+    detail: 'Build · upgrade · survive',
+    search: 'dragon keep tower defense strategy towers monsters goblins skeletons ogres crystal castle waves'
+  }
+];
+
+for (const game of extraGames) {
+  if (grid.querySelector(`a[href="./games/${game.slug}/"]`)) continue;
+  const card = document.createElement('article');
+  card.className = 'game-card';
+  card.dataset.genre = game.genre;
+  card.dataset.search = game.search;
+  card.innerHTML = `
+    <a class="game-link" href="./games/${game.slug}/" aria-label="Play ${game.title}">
+      <div class="game-cover"><img src="./games/${game.slug}/cover.svg" width="960" height="640" alt="" loading="lazy"><span class="game-badge">${game.badge}</span><span class="cover-mark" aria-hidden="true">PRESS PLAY ↗</span></div>
+      <div class="game-info"><div class="game-heading"><img class="game-icon" src="./games/${game.slug}/icon.svg" width="46" height="46" alt="" loading="lazy"><div><h3>${game.title}</h3><div class="game-meta"><span>${game.genre}</span><i aria-hidden="true"></i><span>${game.mode}</span></div></div></div><p class="game-description">${game.description}</p><div class="game-bottom"><span class="game-detail">${game.detail}</span><span class="play-now">Play now <span aria-hidden="true">↗</span></span></div></div>
+    </a>`;
+  grid.append(card);
+}
+
 const cards = [...document.querySelectorAll('.game-card')];
 const search = document.getElementById('game-search');
-const filters = [...document.querySelectorAll('[data-category]')];
-const grid = document.getElementById('game-grid');
+const filtersRoot = document.querySelector('.filters');
 const status = document.getElementById('search-status');
 let category = 'All';
+
+// Keep category buttons and counts in sync with whatever games are currently registered.
+const categoryCounts = cards.reduce((map, card) => {
+  map.set(card.dataset.genre, (map.get(card.dataset.genre) || 0) + 1);
+  return map;
+}, new Map());
+filtersRoot.replaceChildren();
+const allFilter = document.createElement('button');
+allFilter.className = 'filter-button';
+allFilter.dataset.category = 'All';
+allFilter.setAttribute('aria-pressed', 'true');
+allFilter.innerHTML = `All games<span>${cards.length}</span>`;
+filtersRoot.append(allFilter);
+for (const [name, count] of categoryCounts) {
+  const button = document.createElement('button');
+  button.className = 'filter-button';
+  button.dataset.category = name;
+  button.setAttribute('aria-pressed', 'false');
+  button.innerHTML = `${name}<span>${count}</span>`;
+  filtersRoot.append(button);
+}
+const filters = [...filtersRoot.querySelectorAll('[data-category]')];
 
 function filterGames(announce = true) {
   const query = search.value.trim().toLocaleLowerCase();
