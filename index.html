@@ -17,7 +17,7 @@
     <header class="site-header">
       <a class="wordmark" href="./" aria-label="Tishaan’s Game Zone home"><img src="./icon.svg" width="44" height="44" alt=""><span>TISHAAN’S<strong>GAME ZONE<span class="brand-dot">.</span></strong></span></a>
       <nav aria-label="Main navigation"><a class="nav-current" href="#games">The arcade</a><a href="#how-to-play">How to play</a></nav>
-      <button class="shuffle-button" id="surprise-button" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h3c5 0 7 12 12 12h3m-4-4 4 4-4 4M3 18h3c2 0 3-2 4-4m4-4c1-2 2-4 4-4h3m-4-4 4 4-4 4"/></svg><span>Surprise me</span></button>
+      <button class="shuffle-button" id="surprise-button" hidden><span>Surprise me</span></button>
     </header>
 
     <main>
@@ -29,8 +29,7 @@
           <div class="hero-actions"><a class="primary-button" href="#games">LET’S PLAY <span aria-hidden="true">↗</span></a><span class="hero-note">No downloads.<br>No sign-in. Just play.</span></div>
         </div>
         <div class="hero-art" aria-hidden="true">
-          <div class="art-orbit"></div>
-          <span class="art-label"><span></span> READY. SET. PLAY.</span>
+          <div class="art-orbit"></div><span class="art-label"><span></span> READY. SET. PLAY.</span>
           <img class="controller" src="./assets/controller.svg" width="600" height="460" alt="">
           <div class="play-ticket"><span>100%</span><div>POCKET-SIZED<strong>ADVENTURE</strong></div><i>↗</i></div>
           <span class="art-coordinate">EST. 2026 / ALWAYS GAME</span>
@@ -40,69 +39,57 @@
       <div class="arcade-strip" aria-hidden="true"><span>ONE TAP TO PLAY</span><b>✳</b><span>BIG LITTLE ADVENTURES</span><b>✳</b><span>YOUR ARCADE. YOUR RULES.</span><b>✳</b></div>
 
       <section class="library" id="games" aria-labelledby="games-title">
-        <div class="section-heading"><div><div class="eyebrow section-kicker">THE GOOD STUFF</div><h2 id="games-title">Choose your adventure<span>.</span></h2></div><p id="game-count"><!-- GAME_COUNT_START -->7 games ready to play<!-- GAME_COUNT_END --></p></div>
+        <div class="section-heading"><div><div class="eyebrow section-kicker">THE GOOD STUFF</div><h2 id="games-title">Choose your adventure<span>.</span></h2></div><p id="game-count">9 games ready to play</p></div>
         <div class="library-tools" id="library-tools" hidden>
-          <div class="filters" role="group" aria-label="Filter games by category"><!-- GAME_FILTERS_START --><button class="filter-button" data-category="All" aria-pressed="true">All games<span>7</span></button><button class="filter-button" data-category="Action" aria-pressed="false">Action<span>4</span></button><button class="filter-button" data-category="Puzzle" aria-pressed="false">Puzzle<span>1</span></button><button class="filter-button" data-category="Shooter" aria-pressed="false">Shooter<span>1</span></button><button class="filter-button" data-category="Strategy" aria-pressed="false">Strategy<span>1</span></button><!-- GAME_FILTERS_END --></div>
-          <label class="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg><span class="sr-only">Search games</span><input id="game-search" type="search" placeholder="Find your next game" autocomplete="off" maxlength="100"></label>
+          <div class="filters" role="group" aria-label="Filter games by category"></div>
+          <label class="search"><span class="sr-only">Search games</span><input id="game-search" type="search" placeholder="Find your next game" autocomplete="off" maxlength="100"></label>
         </div>
         <div class="arcade-shelf">
-          <div class="game-grid" id="game-grid" data-count="7"><!-- GAME_CARDS_START -->
-            <article class="game-card" data-genre="Action" data-search="avengers arena action four legendary heroes. one rooftop showdown. pick your avenger and unleash your superpower.">
-              <a class="game-link" href="./games/avengers-arena/" aria-label="Play Avengers Arena">
-                <div class="game-cover"><img src="./games/avengers-arena/cover.png" width="960" height="640" alt="" loading="lazy"><span class="game-badge">IN THE SPOTLIGHT</span><span class="cover-mark" aria-hidden="true">PRESS PLAY ↗</span></div>
-                <div class="game-info"><div class="game-heading"><img class="game-icon" src="./games/avengers-arena/icon.svg" width="46" height="46" alt="" loading="lazy"><div><h3>Avengers Arena</h3><div class="game-meta"><span>Action</span><i aria-hidden="true"></i><span>Solo vs AI</span></div></div></div><p class="game-description">Four legendary heroes. One rooftop showdown. Pick your Avenger and unleash your superpower.</p><div class="game-bottom"><span class="game-detail">75-second battles</span><span class="play-now">Play now <span aria-hidden="true">↗</span></span></div></div>
+          <div class="game-grid" id="game-grid" data-count="9">
+            <article class="game-card" data-genre="Adventure" data-search="monterra wilds adventure explore catch battle evolve elemental creatures monster evolution">
+              <a class="game-link" href="./games/monterra/" aria-label="Play Monterra Wilds">
+                <div class="game-cover"><img src="./games/monterra/cover.svg" width="960" height="640" alt="" loading="eager"><span class="game-badge">NEW ADVENTURE</span><span class="cover-mark" aria-hidden="true">PRESS PLAY ↗</span></div>
+                <div class="game-info"><div class="game-heading"><img class="game-icon" src="./games/monterra/icon.svg" width="46" height="46" alt=""><div><h3>Monterra Wilds</h3><div class="game-meta"><span>Adventure</span><i></i><span>Solo</span></div></div></div><p class="game-description">Explore a living wilderness, discover elemental creatures, battle, catch them, level up and unlock powerful evolutions.</p><div class="game-bottom"><span class="game-detail">Explore · Catch · Battle · Evolve</span><span class="play-now">Play now ↗</span></div></div>
               </a>
             </article>
-            <article class="game-card" data-genre="Puzzle" data-search="candy pop puzzle swap colorful candies, pop jelly, and create sweet combos on a trail of 24 magical match-three puzzles.">
-              <a class="game-link" href="./games/candy-pop/" aria-label="Play Candy Pop">
-                <div class="game-cover"><img src="./games/candy-pop/cover.svg" width="960" height="640" alt="" loading="lazy"><span class="game-badge">IN THE SPOTLIGHT</span><span class="cover-mark" aria-hidden="true">PRESS PLAY ↗</span></div>
-                <div class="game-info"><div class="game-heading"><img class="game-icon" src="./games/candy-pop/icon.svg" width="46" height="46" alt="" loading="lazy"><div><h3>Candy Pop</h3><div class="game-meta"><span>Puzzle</span><i aria-hidden="true"></i><span>Solo</span></div></div></div><p class="game-description">Swap colorful candies, pop jelly, and create sweet combos on a trail of 24 magical match-three puzzles.</p><div class="game-bottom"><span class="game-detail">24 levels · Swipe to match</span><span class="play-now">Play now <span aria-hidden="true">↗</span></span></div></div>
-              </a>
+            <article class="game-card" data-genre="Shooter" data-search="world strike shooter country gun arena combat bots">
+              <a class="game-link" href="./games/world-strike/" aria-label="Play World Strike"><div class="game-cover"><img src="./games/world-strike/cover.svg" width="960" height="640" alt=""><span class="game-badge">IN THE SPOTLIGHT</span><span class="cover-mark">PRESS PLAY ↗</span></div><div class="game-info"><div class="game-heading"><img class="game-icon" src="./games/world-strike/icon.svg" width="46" height="46" alt=""><div><h3>World Strike</h3><div class="game-meta"><span>Shooter</span><i></i><span>Solo</span></div></div></div><p class="game-description">Choose your country, pick your gun, and defend the arena against eight waves of rogue combat bots.</p><div class="game-bottom"><span class="game-detail">6 countries · 4 guns · 8 waves</span><span class="play-now">Play now ↗</span></div></div></a>
             </article>
-            <article class="game-card" data-genre="Shooter" data-search="iron citadel shooter enter a pixel fortress in a retro first-person shooter. find the keys, blast robot sentries and face the warden.">
-              <a class="game-link" href="./games/iron-citadel/" aria-label="Play Iron Citadel">
-                <div class="game-cover"><img src="./games/iron-citadel/cover.svg" width="960" height="640" alt="" loading="lazy"><span class="game-badge">IN THE SPOTLIGHT</span><span class="cover-mark" aria-hidden="true">PRESS PLAY ↗</span></div>
-                <div class="game-info"><div class="game-heading"><img class="game-icon" src="./games/iron-citadel/icon.svg" width="46" height="46" alt="" loading="lazy"><div><h3>Iron Citadel</h3><div class="game-meta"><span>Shooter</span><i aria-hidden="true"></i><span>Solo</span></div></div></div><p class="game-description">Enter a pixel fortress in a retro first-person shooter. Find the keys, blast robot sentries and face the Warden.</p><div class="game-bottom"><span class="game-detail">3 missions · Touch + keyboard</span><span class="play-now">Play now <span aria-hidden="true">↗</span></span></div></div>
-              </a>
+            <article class="game-card" data-genre="Action" data-search="avengers arena action legendary heroes rooftop showdown superpower">
+              <a class="game-link" href="./games/avengers-arena/" aria-label="Play Avengers Arena"><div class="game-cover"><img src="./games/avengers-arena/cover.png" width="960" height="640" alt=""><span class="game-badge">IN THE SPOTLIGHT</span><span class="cover-mark">PRESS PLAY ↗</span></div><div class="game-info"><div class="game-heading"><img class="game-icon" src="./games/avengers-arena/icon.svg" width="46" height="46" alt=""><div><h3>Avengers Arena</h3><div class="game-meta"><span>Action</span><i></i><span>Solo vs AI</span></div></div></div><p class="game-description">Four legendary heroes. One rooftop showdown. Pick your Avenger and unleash your superpower.</p><div class="game-bottom"><span class="game-detail">75-second battles</span><span class="play-now">Play now ↗</span></div></div></a>
             </article>
-            <article class="game-card" data-genre="Action" data-search="chikoo &amp; bunty: mischief chase action race through the neighbourhood, dodge obstacles, and collect stars and laddoos in a mischievous chase.">
-              <a class="game-link" href="./games/chikoo-bunty/" aria-label="Play Chikoo &amp; Bunty: Mischief Chase">
-                <div class="game-cover"><img src="./games/chikoo-bunty/cover.svg" width="960" height="640" alt="" loading="lazy"><span class="cover-mark" aria-hidden="true">PRESS PLAY ↗</span></div>
-                <div class="game-info"><div class="game-heading"><img class="game-icon" src="./games/chikoo-bunty/icon.svg" width="46" height="46" alt="" loading="lazy"><div><h3>Chikoo &amp; Bunty: Mischief Chase</h3><div class="game-meta"><span>Action</span><i aria-hidden="true"></i><span>Solo</span></div></div></div><p class="game-description">Race through the neighbourhood, dodge obstacles, and collect stars and laddoos in a mischievous chase.</p><div class="game-bottom"><span class="game-detail">Jump, dodge, and collect</span><span class="play-now">Play now <span aria-hidden="true">↗</span></span></div></div>
-              </a>
+            <article class="game-card" data-genre="Puzzle" data-search="candy pop puzzle match three candies jelly combos">
+              <a class="game-link" href="./games/candy-pop/" aria-label="Play Candy Pop"><div class="game-cover"><img src="./games/candy-pop/cover.svg" width="960" height="640" alt=""><span class="game-badge">IN THE SPOTLIGHT</span><span class="cover-mark">PRESS PLAY ↗</span></div><div class="game-info"><div class="game-heading"><img class="game-icon" src="./games/candy-pop/icon.svg" width="46" height="46" alt=""><div><h3>Candy Pop</h3><div class="game-meta"><span>Puzzle</span><i></i><span>Solo</span></div></div></div><p class="game-description">Swap colorful candies, pop jelly, and create sweet combos on a trail of 24 magical match-three puzzles.</p><div class="game-bottom"><span class="game-detail">24 levels · Swipe to match</span><span class="play-now">Play now ↗</span></div></div></a>
             </article>
-            <article class="game-card" data-genre="Strategy" data-search="dragon keep td strategy build and upgrade arrow, frost, and cannon towers to protect the dragon crystal from ten monster waves.">
-              <a class="game-link" href="./games/dragon-keep/" aria-label="Play Dragon Keep TD">
-                <div class="game-cover"><img src="./games/dragon-keep/cover.svg" width="960" height="640" alt="" loading="lazy"><span class="cover-mark" aria-hidden="true">PRESS PLAY ↗</span></div>
-                <div class="game-info"><div class="game-heading"><img class="game-icon" src="./games/dragon-keep/icon.svg" width="46" height="46" alt="" loading="lazy"><div><h3>Dragon Keep TD</h3><div class="game-meta"><span>Strategy</span><i aria-hidden="true"></i><span>Solo</span></div></div></div><p class="game-description">Build and upgrade arrow, frost, and cannon towers to protect the Dragon Crystal from ten monster waves.</p><div class="game-bottom"><span class="game-detail">Tower defence · 10 waves</span><span class="play-now">Play now <span aria-hidden="true">↗</span></span></div></div>
-              </a>
+            <article class="game-card" data-genre="Shooter" data-search="iron citadel shooter pixel fortress robot sentries warden">
+              <a class="game-link" href="./games/iron-citadel/" aria-label="Play Iron Citadel"><div class="game-cover"><img src="./games/iron-citadel/cover.svg" width="960" height="640" alt=""><span class="game-badge">IN THE SPOTLIGHT</span><span class="cover-mark">PRESS PLAY ↗</span></div><div class="game-info"><div class="game-heading"><img class="game-icon" src="./games/iron-citadel/icon.svg" width="46" height="46" alt=""><div><h3>Iron Citadel</h3><div class="game-meta"><span>Shooter</span><i></i><span>Solo</span></div></div></div><p class="game-description">Enter a pixel fortress in a retro first-person shooter. Find the keys, blast robot sentries and face the Warden.</p><div class="game-bottom"><span class="game-detail">3 missions · Touch + keyboard</span><span class="play-now">Play now ↗</span></div></div></a>
             </article>
-            <article class="game-card" data-genre="Action" data-search="ghost village action join three ninjas and the death ninja gang to protect an ancient mountain village from invading ghosts.">
-              <a class="game-link" href="./games/ghost-village/" aria-label="Play Ghost Village">
-                <div class="game-cover"><img src="./games/ghost-village/cover.svg" width="960" height="640" alt="" loading="lazy"><span class="cover-mark" aria-hidden="true">PRESS PLAY ↗</span></div>
-                <div class="game-info"><div class="game-heading"><img class="game-icon" src="./games/ghost-village/icon.svg" width="46" height="46" alt="" loading="lazy"><div><h3>Ghost Village</h3><div class="game-meta"><span>Action</span><i aria-hidden="true"></i><span>Solo</span></div></div></div><p class="game-description">Join three ninjas and the Death Ninja Gang to protect an ancient mountain village from invading ghosts.</p><div class="game-bottom"><span class="game-detail">Ninjas vs. ghosts</span><span class="play-now">Play now <span aria-hidden="true">↗</span></span></div></div>
-              </a>
+            <article class="game-card" data-genre="Action" data-search="chikoo bunty mischief chase action neighbourhood obstacles stars laddoos">
+              <a class="game-link" href="./games/chikoo-bunty/" aria-label="Play Chikoo and Bunty"><div class="game-cover"><img src="./games/chikoo-bunty/cover.svg" width="960" height="640" alt=""><span class="cover-mark">PRESS PLAY ↗</span></div><div class="game-info"><div class="game-heading"><img class="game-icon" src="./games/chikoo-bunty/icon.svg" width="46" height="46" alt=""><div><h3>Chikoo &amp; Bunty: Mischief Chase</h3><div class="game-meta"><span>Action</span><i></i><span>Solo</span></div></div></div><p class="game-description">Race through the neighbourhood, dodge obstacles, and collect stars and laddoos in a mischievous chase.</p><div class="game-bottom"><span class="game-detail">Jump, dodge, and collect</span><span class="play-now">Play now ↗</span></div></div></a>
             </article>
-            <article class="game-card" data-genre="Action" data-search="iron flight action fly through the skyline, dodge enemy drones, and collect glowing energy cores to beat your best score.">
-              <a class="game-link" href="./games/iron-flight/" aria-label="Play Iron Flight">
-                <div class="game-cover"><img src="./games/iron-flight/cover.svg" width="960" height="640" alt="" loading="lazy"><span class="cover-mark" aria-hidden="true">PRESS PLAY ↗</span></div>
-                <div class="game-info"><div class="game-heading"><img class="game-icon" src="./games/iron-flight/icon.svg" width="46" height="46" alt="" loading="lazy"><div><h3>Iron Flight</h3><div class="game-meta"><span>Action</span><i aria-hidden="true"></i><span>Solo</span></div></div></div><p class="game-description">Fly through the skyline, dodge enemy drones, and collect glowing energy cores to beat your best score.</p><div class="game-bottom"><span class="game-detail">Hold to fly · Release to drop</span><span class="play-now">Play now <span aria-hidden="true">↗</span></span></div></div>
-              </a>
+            <article class="game-card" data-genre="Strategy" data-search="dragon keep tower defence strategy crystal monster waves">
+              <a class="game-link" href="./games/dragon-keep/" aria-label="Play Dragon Keep TD"><div class="game-cover"><img src="./games/dragon-keep/cover.svg" width="960" height="640" alt=""><span class="cover-mark">PRESS PLAY ↗</span></div><div class="game-info"><div class="game-heading"><img class="game-icon" src="./games/dragon-keep/icon.svg" width="46" height="46" alt=""><div><h3>Dragon Keep TD</h3><div class="game-meta"><span>Strategy</span><i></i><span>Solo</span></div></div></div><p class="game-description">Build and upgrade arrow, frost, and cannon towers to protect the Dragon Crystal from ten monster waves.</p><div class="game-bottom"><span class="game-detail">Tower defence · 10 waves</span><span class="play-now">Play now ↗</span></div></div></a>
             </article>
-          <!-- GAME_CARDS_END --></div>
-          <div class="empty-state" id="empty-state" hidden><span aria-hidden="true">⌕</span><h3>No games found.</h3><p>Try another name or category.</p><button class="text-button" id="clear-search">Show all games <span aria-hidden="true">↗</span></button></div>
-          <aside class="next-up"><div class="next-up-top"><span>NEXT LEVEL</span><span aria-hidden="true">↗</span></div><div class="pixel-spark" aria-hidden="true"><svg viewBox="0 0 100 100"><path d="M40 0h20v30h10V20h10v10H70v10h30v20H70v10h10v10H70V70H60v30H40V70H30v10H20V70h10V60H0V40h30V30H20V20h10v10h10V30H40Z"/></svg></div><h3>More worlds.<br>More ways to play.</h3><p>The adventure doesn’t end here.<br>New games will land in this zone.</p><span class="coming-label"><i></i> MORE GOOD TIMES AHEAD</span></aside>
+            <article class="game-card" data-genre="Action" data-search="ghost village action ninja gang ghosts mountain village">
+              <a class="game-link" href="./games/ghost-village/" aria-label="Play Ghost Village"><div class="game-cover"><img src="./games/ghost-village/cover.svg" width="960" height="640" alt=""><span class="cover-mark">PRESS PLAY ↗</span></div><div class="game-info"><div class="game-heading"><img class="game-icon" src="./games/ghost-village/icon.svg" width="46" height="46" alt=""><div><h3>Ghost Village</h3><div class="game-meta"><span>Action</span><i></i><span>Solo</span></div></div></div><p class="game-description">Join three ninjas and the Death Ninja Gang to protect an ancient mountain village from invading ghosts.</p><div class="game-bottom"><span class="game-detail">Ninjas vs. ghosts</span><span class="play-now">Play now ↗</span></div></div></a>
+            </article>
+            <article class="game-card" data-genre="Action" data-search="iron flight action skyline enemy drones energy cores fly">
+              <a class="game-link" href="./games/iron-flight/" aria-label="Play Iron Flight"><div class="game-cover"><img src="./games/iron-flight/cover.svg" width="960" height="640" alt=""><span class="cover-mark">PRESS PLAY ↗</span></div><div class="game-info"><div class="game-heading"><img class="game-icon" src="./games/iron-flight/icon.svg" width="46" height="46" alt=""><div><h3>Iron Flight</h3><div class="game-meta"><span>Action</span><i></i><span>Solo</span></div></div></div><p class="game-description">Fly through the skyline, dodge enemy drones, and collect glowing energy cores to beat your best score.</p><div class="game-bottom"><span class="game-detail">Hold to fly · Release to drop</span><span class="play-now">Play now ↗</span></div></div></a>
+            </article>
+          </div>
+          <div class="empty-state" id="empty-state" hidden><span aria-hidden="true">⌕</span><h3>No games found.</h3><p>Try another name or category.</p><button class="text-button" id="clear-search">Show all games ↗</button></div>
+          <aside class="next-up"><div class="next-up-top"><span>NEXT LEVEL</span><span>↗</span></div><h3>More worlds.<br>More ways to play.</h3><p>The adventure doesn’t end here.<br>New games will land in this zone.</p><span class="coming-label"><i></i> MORE GOOD TIMES AHEAD</span></aside>
         </div>
         <p class="search-status sr-only" id="search-status" role="status" aria-live="polite"></p>
       </section>
 
       <section class="how-to" id="how-to-play" aria-labelledby="how-title">
         <div class="how-intro"><div class="eyebrow section-kicker">LESS SETUP. MORE PLAY.</div><h2 id="how-title">From here to<br>“one more round.”</h2></div>
-        <div class="how-step"><span class="step-icon">01 <span aria-hidden="true">↗</span></span><h3>Pick your game</h3><p>Choose a world that looks like your kind of fun.</p></div>
-        <div class="how-step"><span class="step-icon purple">02 <span aria-hidden="true">✦</span></span><h3>Jump straight in</h3><p>Tap Play now. Your browser is all you need.</p></div>
-        <div class="how-step"><span class="step-icon pink">03 <span aria-hidden="true">♡</span></span><h3>Make it your zone</h3><p>Come back anytime. A little adventure goes a long way.</p></div>
+        <div class="how-step"><span class="step-icon">01 ↗</span><h3>Pick your game</h3><p>Choose a world that looks like your kind of fun.</p></div>
+        <div class="how-step"><span class="step-icon purple">02 ✦</span><h3>Jump straight in</h3><p>Tap Play now. Your browser is all you need.</p></div>
+        <div class="how-step"><span class="step-icon pink">03 ♡</span><h3>Make it your zone</h3><p>Come back anytime. A little adventure goes a long way.</p></div>
       </section>
-      <div class="bottom-banner"><span class="banner-star" aria-hidden="true">✳</span><p>Small screens.<strong>Really big fun.</strong></p><span class="banner-note">PHONE · TABLET · DESKTOP</span><a href="#games" aria-label="Back to the games">↗</a></div>
+      <div class="bottom-banner"><span class="banner-star">✳</span><p>Small screens.<strong>Really big fun.</strong></p><span class="banner-note">PHONE · TABLET · DESKTOP</span><a href="#games">↗</a></div>
     </main>
     <footer><a class="footer-brand" href="./">Tishaan’s Game Zone<span>✳</span></a><p>A little escape. A lot of play.</p><a href="#zone-title">BACK TO TOP ↑</a></footer>
   </div>
