@@ -1,5 +1,17 @@
 [
   {
+    "slug": "world-strike",
+    "name": "World Strike",
+    "description": "Choose your country, pick your gun, and defend the arena against eight waves of rogue combat bots.",
+    "category": "Shooter",
+    "players": "Solo",
+    "detail": "6 countries · 4 guns · 8 waves",
+    "icon": "./games/world-strike/icon.svg",
+    "cover": "./games/world-strike/cover.svg",
+    "href": "./games/world-strike/",
+    "featured": true
+  },
+  {
     "slug": "avengers-arena",
     "name": "Avengers Arena",
     "description": "Four legendary heroes. One rooftop showdown. Pick your Avenger and unleash your superpower.",
