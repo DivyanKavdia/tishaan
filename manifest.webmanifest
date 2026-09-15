@@ -6,11 +6,29 @@
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "portrait-primary",
   "background_color": "#101019",
   "theme_color": "#101019",
+  "categories": ["games", "entertainment"],
+  "prefer_related_applications": false,
   "icons": [
     { "src": "./icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
     { "src": "./icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" },
     { "src": "./icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ],
+  "shortcuts": [
+    {
+      "name": "Play Dragon Keep TD",
+      "short_name": "Dragon Keep",
+      "url": "./games/dragon-keep/",
+      "icons": [{ "src": "./games/dragon-keep/icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+    },
+    {
+      "name": "Play Ghost Village",
+      "short_name": "Ghost Village",
+      "url": "./games/ghost-village/",
+      "icons": [{ "src": "./games/ghost-village/icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+    }
   ]
 }
