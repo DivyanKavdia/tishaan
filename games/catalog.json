@@ -24,6 +24,18 @@
     "featured": true
   },
   {
+    "slug": "iron-citadel",
+    "name": "Iron Citadel",
+    "description": "Enter a pixel fortress in a retro first-person shooter. Find the keys, blast robot sentries and face the Warden.",
+    "category": "Shooter",
+    "players": "Solo",
+    "detail": "3 missions · Touch + keyboard",
+    "icon": "./games/iron-citadel/icon.svg",
+    "cover": "./games/iron-citadel/cover.svg",
+    "href": "./games/iron-citadel/",
+    "featured": true
+  },
+  {
     "slug": "chikoo-bunty",
     "name": "Chikoo & Bunty: Mischief Chase",
     "description": "Race through the neighbourhood, dodge obstacles, and collect stars and laddoos in a mischievous chase.",

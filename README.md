@@ -7,7 +7,11 @@ A mobile game hub with illustrated game cards, instant launch, search, category 
 ## Games
 
 - [Candy Pop](https://divyankavdia.github.io/tishaan/games/candy-pop/): a candy match-three adventure with 24 levels, striped and wrapped candies, rainbow bombs, special combinations, jelly goals, free hints, two boosters of each type per level, and saved progress. Swipe or tap adjacent candies; keyboard users can select with Space/Enter or swap with Shift + arrows. Visit online once for offline play. Progress stays in the current browser; private browsing or cleared site data can remove it.
+- [Iron Citadel](https://divyankavdia.github.io/tishaan/games/iron-citadel/): a retro first-person shooter with three fortress missions, robot sentries, a final boss, gold keys, a sidearm, a repeater, and an unlimited shock tool. Touch and desktop controls, two difficulties, mission unlocks, sound, and offline play.
+
 - [Avengers Arena](https://divyankavdia.github.io/tishaan/games/avengers-arena/): choose Iron Man, Captain America, Thor, or Hulk and fight an AI opponent. Includes touch controls, special moves, three difficulties, 75-second rounds, sound, pause, and rematches.
+
+Iron Citadel controls: WASD moves, arrow keys or mouse drag turn, Space/click fires, E opens doors/exits, R reloads, 1/2/3 or Q changes weapons, M expands the explored map, and Escape pauses. Phones use a movement stick, drag-to-look, and Fire/Open buttons. Complete a mission to save its successor as an unlocked starting point. Switching apps pauses the mission. The game has its own offline worker; visit it online once before playing offline.
 
 ## Develop
 
@@ -77,11 +81,14 @@ npm install --no-save playwright
 npx playwright install chromium
 npm run test:hub
 npm run test:browser
+npm run test:citadel
 npm run test:candy
 ```
 
 Set `ARENA_BROWSER_PROFILE=phone`, `small-phone`, `landscape`, or `desktop` to check one gameplay layout. `ARENA_SOURCE_SITE=1` runs browser checks against the repository files rather than `dist/`.
 
 Avengers Arena keyboard controls: arrows or A/D to move, Space/W to jump, J to strike, K for a special move, L/Shift to guard, and Escape to pause. All actions also have on-screen touch controls. Switching apps pauses the fight.
+
+Iron Citadel uses original procedural pixel art and synthesized audio, with no external asset or runtime dependencies. Its browser checks cover desktop, 390px and 320px phones, landscape controls, and an offline hub/game round trip; its engine checks include traversing all three levels, weapons, collisions, enemy dodging, and progression.
 
 Avengers Arena is an unofficial fan game. Character artwork and audio are drawn or synthesized in the browser; Marvel characters belong to their respective owners. Browser checks emulate devices and do not replace physical iPhone/Safari or Android testing.

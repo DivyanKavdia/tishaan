@@ -1,0 +1,10 @@
+{
+  "name": "Iron Citadel",
+  "description": "Enter a pixel fortress in a retro first-person shooter. Find the keys, blast robot sentries and face the Warden.",
+  "category": "Shooter",
+  "players": "Solo",
+  "detail": "3 missions · Touch + keyboard",
+  "icon": "icon.svg",
+  "cover": "cover.svg",
+  "featured": true
+}

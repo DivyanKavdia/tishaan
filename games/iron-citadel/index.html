@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#121d24">
+  <meta name="description" content="Enter Iron Citadel: a retro first-person shooter with three fortress missions, secret supplies, a robot army, and a final boss. Play on your phone or desktop.">
+  <title>Iron Citadel · Tishaan’s Game Zone</title>
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="apple-touch-icon" href="../../icon-192.png">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <a href="../../" class="hub-link" aria-label="Back to Tishaan’s Game Zone"><span class="zone-icon">T<span>↗</span></span><span>TISHAAN’S<strong>GAME ZONE</strong></span></a>
+      <span class="top-label"><i></i> ORIGINAL ARCADE / VOL. 01</span>
+      <div class="top-actions"><button id="sound" aria-label="Mute sound" aria-pressed="false">♪ <span>SOUND</span></button><button id="fullscreen" aria-label="Enter fullscreen"><svg class="fullscreen-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9V3h6m6 0h6v6m0 6v6h-6M9 21H3v-6"/></svg><span>FULLSCREEN</span></button></div>
+    </header>
+    <main id="game" class="game-frame" data-phase="menu">
+      <canvas id="scene" tabindex="0" aria-label="First-person fortress. Move with W A S D, turn with arrows or drag, fire with Space, open doors with E."></canvas>
+      <div class="scanlines" aria-hidden="true"></div>
+      <div id="menu" class="menu">
+        <div class="menu-copy">
+          <div class="eyebrow"><span class="live-dot"></span> A RETRO FIRST-PERSON SHOOTER</div>
+          <h1>IRON<br><span>CITADEL</span><sup>3D</sup></h1>
+          <p class="tagline">One operative. A fortress of steel.<br>Find the key. Fight your way out.</p>
+          <div class="mission-trail"><span><b>01</b> INFILTRATE</span><i>→</i><span><b>02</b> ARM UP</span><i>→</i><span><b>03</b> ESCAPE</span></div>
+          <div class="setup">
+            <fieldset><legend>CHOOSE YOUR CHALLENGE</legend><label><input type="radio" name="difficulty" value="explorer" checked><span>Explorer<small>A gentler first mission</small></span></label><label><input type="radio" name="difficulty" value="classic"><span>Classic<small>The old-school challenge</small></span></label></fieldset>
+            <div class="sector-select"><label for="sector">DEPLOY TO</label><select id="sector"><option value="0">01 / The Outpost</option><option value="1" disabled>02 / The Foundry — locked</option><option value="2" disabled>03 / Iron Citadel — locked</option></select></div>
+            <button id="start" class="primary">ENTER THE FORTRESS <span>↗</span></button>
+            <div class="start-note"><span>3 MISSIONS · NO SIGN-IN</span><span id="best">BEST 00000</span></div>
+          </div>
+        </div>
+        <div class="scene-caption"><span>TRANSMISSION 001</span><strong>THE OUTPOST</strong><p>Enemy systems online.<br>Your mission starts here.</p><span class="signal">▂▄▆█ <i> SIGNAL ACQUIRED</i></span></div>
+        <details class="instructions"><summary>FIELD MANUAL <span>+</span></summary><div><p><strong>Phone:</strong> left stick to move; drag the right side to turn; hold FIRE to shoot. Tap OPEN beside a door or exit.</p><p><strong>Desktop:</strong> WASD to move, arrows to turn, mouse drag or Mouse aim to look, Space/click to fire. E opens doors, R reloads, 1/2/3 change weapons, M opens map, Esc pauses.</p><p>Collect the gold key, then use the gold EXIT. Red visors flash before enemies shoot: move sideways to dodge. The Foundry has a repeater. The shock tool uses no ammo. Progress saves after each mission.</p></div></details>
+      </div>
+      <div id="play-ui" hidden>
+        <div class="mission-hud"><span id="sector-number">SECTOR 01 / 03</span><strong id="sector-name">THE OUTPOST</strong><span id="objective">FIND THE GOLD KEY</span></div>
+        <div class="game-actions"><button id="map-button" aria-label="Expand map" aria-pressed="false">▦ <span>MAP</span></button><button id="pause" aria-label="Pause game">Ⅱ <span>PAUSE</span></button></div>
+        <div class="map-wrap" id="map-wrap"><canvas id="map" width="112" height="112" aria-label="Explored map. Gold marks the exit and discovered key."></canvas><span>↑ YOU · GOLD: KEY / EXIT</span></div>
+        <div id="crosshair" aria-hidden="true"><i></i><b></b><span></span></div>
+        <div id="toast" class="toast" role="status" aria-live="polite"></div>
+        <div id="interact-hint" class="interact-hint" hidden></div>
+        <div class="look-zone" id="look-zone" aria-label="Drag to turn"></div>
+        <div class="touch-controls">
+          <div class="move-control"><div id="joystick" class="joystick" role="group" aria-label="Movement joystick"><span class="stick-guide">✛</span><span id="stick" class="stick"></span></div><span class="control-label">MOVE</span></div>
+          <span class="look-label">DRAG TO LOOK ↔</span>
+          <div class="touch-actions"><button id="interact" aria-label="Open door or exit">↥ <span>OPEN</span></button><button id="fire" aria-label="Fire weapon"><svg class="fire-icon" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="9"/><path d="M16 1v9m0 12v9M1 16h9m12 0h9"/><circle cx="16" cy="16" r="2"/></svg><span>FIRE</span></button></div>
+        </div>
+        <div class="statusbar">
+          <div class="health-stat"><span>+ HEALTH</span><strong id="health">100</strong><div class="health-track"><i id="health-bar"></i></div></div>
+          <button id="weapon" class="weapon-stat" aria-label="Change weapon"><span id="weapon-name">01 / SIDEARM</span><strong id="ammo">12 <small>/ 60</small></strong><span class="weapon-switch">⇄ SWITCH</span></button>
+          <button id="reload" class="reload-button" aria-label="Reload weapon">↻<span>RELOAD</span></button>
+          <div class="key-stat"><span>KEYCARD</span><strong id="key">—</strong></div>
+          <div class="score-stat"><span>SCORE</span><strong id="score">00000</strong></div>
+        </div>
+      </div>
+      <dialog id="dialog" aria-labelledby="dialog-title"><div class="dialog-content"><span class="eyebrow" id="dialog-kicker">MISSION ON HOLD</span><h2 id="dialog-title">TAKE A BREATHER.</h2><p id="dialog-text">The fortress can wait.</p><div id="result-stats" class="result-stats" hidden></div><button id="continue" class="primary">BACK TO ACTION <span>↗</span></button><button id="restart" class="secondary">RESTART THIS MISSION</button><button id="menu-button" class="text-button">RETURN TO BRIEFING</button></div></dialog>
+      <noscript><div class="no-script">Enable JavaScript to play Iron Citadel. <a href="../../">Back to Game Zone</a></div></noscript>
+    </main>
+    <footer class="footer"><span><i></i> <span id="footer-status">BUILT FOR THE NEXT “ONE MORE TRY.”</span></span><span class="desktop-help">WASD MOVE · SPACE FIRE · E OPEN <button id="mouse-aim">MOUSE AIM ↗</button></span><span class="mobile-help">HEADPHONES ON. ADVENTURE AWAITS.</span></footer>
+  </div>
+  <script type="module" src="./game.js"></script>
+</body>
+</html>
