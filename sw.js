@@ -1,7 +1,7 @@
 const CACHE_PREFIX = 'tishaan-game-zone-';
-const CACHE = 'tishaan-game-zone-world-strike-1';
+const CACHE = 'tishaan-game-zone-monterra-1';
 const BASE = new URL('./', self.location.href);
-const ASSETS = ['./', './index.html', './assets/hub.css', './assets/hub.js', './assets/controller.svg', './games/catalog.json', './icon.svg', './icon-192.png', './icon-512.png', './manifest.webmanifest'];
+const ASSETS = ['./', './index.html', './assets/hub.css', './assets/hub.js', './assets/controller.svg', './games/catalog.json', './icon.svg', './icon-192.png', './icon-512.png', './manifest.webmanifest', './games/monterra/icon.svg', './games/monterra/cover.svg'];
 
 self.addEventListener('install', event => {
   event.waitUntil((async () => {
