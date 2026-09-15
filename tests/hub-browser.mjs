@@ -9,11 +9,13 @@ const require = createRequire(import.meta.url);
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE_PATH || 'playwright');
 const project = fileURLToPath(new URL('../', import.meta.url));
 const root = process.env.ARENA_SOURCE_SITE ? project : path.join(project, 'dist');
+const catalog = JSON.parse(await readFile(path.join(root, 'games/catalog.json'), 'utf8'));
+const actionCount = catalog.filter(game => game.category === 'Action').length;
 const output = path.join(project, 'test-results');
 await mkdir(output, { recursive: true });
 const types = { '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript', '.json': 'application/json', '.webmanifest': 'application/manifest+json', '.svg': 'image/svg+xml', '.png': 'image/png' };
 let legacy = false;
-const legacyWorker = `const CACHE='avengers-arena-v2'; self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(['./','./index.html'])))); self.addEventListener('fetch',e=>{if(e.request.method==='GET')e.respondWith(fetch(e.request).catch(()=>caches.match(e.request).then(r=>r||caches.match('./index.html'))));});`;
+const legacyWorker = `const CACHE='avengers-arena-v2'; self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(['./','./index.html'])))); self.addEventListener('activate',e=>e.waitUntil(self.clients.claim())); self.addEventListener('fetch',e=>{if(e.request.method==='GET')e.respondWith(fetch(e.request).catch(()=>caches.match(e.request).then(r=>r||caches.match('./index.html'))));});`;
 const server = http.createServer(async (request, response) => {
   try {
     const url = new URL(request.url, 'http://localhost');
@@ -59,14 +61,14 @@ try {
       await page.waitForFunction(() => [...document.images].every(image => image.complete && image.naturalWidth > 0));
       await page.evaluate(() => window.scrollTo(0, 0));
       await page.screenshot({ path: path.join(output, `hub-${name}.png`), fullPage: true });
-      assert.equal(await page.locator('.game-card').count(), 1);
+      assert.equal(await page.locator('.game-card').count(), catalog.length);
       await page.getByRole('button', { name: 'Action', exact: false }).click();
-      assert.equal(await page.locator('.game-card:visible').count(), 1);
+      assert.equal(await page.locator('.game-card:visible').count(), actionCount);
       await page.locator('#game-search').fill('not-a-game');
       assert.ok(await page.locator('#empty-state').isVisible());
       assert.equal(await page.locator('.game-card:visible').count(), 0);
       await page.getByRole('button', { name: 'Show all games' }).click();
-      assert.equal(await page.locator('.game-card:visible').count(), 1);
+      assert.equal(await page.locator('.game-card:visible').count(), catalog.length);
       await page.locator('#game-search').fill('avengers');
       await page.getByRole('link', { name: 'Play Avengers Arena', exact: true }).click();
       assert.equal(new URL(page.url()).pathname, '/tishaan/games/avengers-arena/');
@@ -94,7 +96,8 @@ try {
         await context.setOffline(false);
       }
       await page.getByRole('button', { name: 'Play a surprise game' }).click();
-      assert.ok(page.url().endsWith('/games/avengers-arena/'));
+      await page.waitForURL(/\/games\/[^/]+\/$/);
+      assert.ok(catalog.some(game => page.url().endsWith(`/games/${game.slug}/`)));
       assert.deepEqual(errors, []);
       console.log(`PASS hub ${name}: artwork, layout, search, filters, launch, controls, return, surprise${name === 'phone' ? ', offline round trip' : ''}`);
     } finally { await browser.close(); }
@@ -115,7 +118,7 @@ try {
       await page.waitForFunction(async () => !(await caches.has('avengers-arena-v2')) && (await caches.keys()).some(key => key.startsWith('tishaan-game-zone-')));
       await page.context().setOffline(true); await page.reload();
       assert.equal(await page.title(), 'Tishaan’s Game Zone');
-      assert.equal(await page.locator('.game-card').count(), 1);
+      assert.equal(await page.locator('.game-card').count(), catalog.length);
       console.log('PASS migration: existing root Avengers installation upgrades to the hub and loads offline.');
     } finally { legacy = false; await browser.close(); }
     const browserNoJS = await chromium.launch(options);

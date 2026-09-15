@@ -11,6 +11,7 @@
     "test:browser": "node tests/browser.mjs",
     "preview": "node scripts/serve.mjs --dist",
     "catalog": "node scripts/catalog.mjs",
-    "test:hub": "node tests/hub-browser.mjs"
+    "test:hub": "node tests/hub-browser.mjs",
+    "test:candy": "node tests/candy-browser.mjs"
   }
 }

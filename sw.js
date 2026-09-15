@@ -1,5 +1,5 @@
 const CACHE_PREFIX = 'tishaan-game-zone-';
-const CACHE = 'tishaan-game-zone-pwa-20260915';
+const CACHE = 'tishaan-game-zone-204382f7c8f6';
 const BASE = new URL('./', self.location.href);
 const ASSETS = ['./', './index.html', './assets/hub.css', './assets/hub.js', './assets/controller.svg', './games/catalog.json', './icon.svg', './icon-192.png', './icon-512.png', './manifest.webmanifest'];
 

@@ -6,6 +6,7 @@ A mobile game hub with illustrated game cards, instant launch, search, category 
 
 ## Games
 
+- [Candy Pop](https://divyankavdia.github.io/tishaan/games/candy-pop/): a candy match-three adventure with 24 levels, striped and wrapped candies, rainbow bombs, special combinations, jelly goals, free hints, two boosters of each type per level, and saved progress. Swipe or tap adjacent candies; keyboard users can select with Space/Enter or swap with Shift + arrows. Visit online once for offline play. Progress stays in the current browser; private browsing or cleared site data can remove it.
 - [Avengers Arena](https://divyankavdia.github.io/tishaan/games/avengers-arena/): choose Iron Man, Captain America, Thor, or Hulk and fight an AI opponent. Includes touch controls, special moves, three difficulties, 75-second rounds, sound, pause, and rematches.
 
 ## Develop
@@ -76,6 +77,7 @@ npm install --no-save playwright
 npx playwright install chromium
 npm run test:hub
 npm run test:browser
+npm run test:candy
 ```
 
 Set `ARENA_BROWSER_PROFILE=phone`, `small-phone`, `landscape`, or `desktop` to check one gameplay layout. `ARENA_SOURCE_SITE=1` runs browser checks against the repository files rather than `dist/`.

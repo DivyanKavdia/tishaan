@@ -1,0 +1,9 @@
+{
+  "name": "Ghost Village",
+  "description": "Join three ninjas and the Death Ninja Gang to protect an ancient mountain village from invading ghosts.",
+  "category": "Action",
+  "players": "Solo",
+  "detail": "Ninjas vs. ghosts",
+  "icon": "icon.svg",
+  "cover": "cover.svg"
+}

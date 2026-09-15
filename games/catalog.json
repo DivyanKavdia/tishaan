@@ -10,5 +10,65 @@
     "cover": "./games/avengers-arena/cover.png",
     "href": "./games/avengers-arena/",
     "featured": true
+  },
+  {
+    "slug": "candy-pop",
+    "name": "Candy Pop",
+    "description": "Swap colorful candies, pop jelly, and create sweet combos on a trail of 24 magical match-three puzzles.",
+    "category": "Puzzle",
+    "players": "Solo",
+    "detail": "24 levels · Swipe to match",
+    "icon": "./games/candy-pop/icon.svg",
+    "cover": "./games/candy-pop/cover.svg",
+    "href": "./games/candy-pop/",
+    "featured": true
+  },
+  {
+    "slug": "chikoo-bunty",
+    "name": "Chikoo & Bunty: Mischief Chase",
+    "description": "Race through the neighbourhood, dodge obstacles, and collect stars and laddoos in a mischievous chase.",
+    "category": "Action",
+    "players": "Solo",
+    "detail": "Jump, dodge, and collect",
+    "icon": "./games/chikoo-bunty/icon.svg",
+    "cover": "./games/chikoo-bunty/cover.svg",
+    "href": "./games/chikoo-bunty/",
+    "featured": false
+  },
+  {
+    "slug": "dragon-keep",
+    "name": "Dragon Keep TD",
+    "description": "Build and upgrade arrow, frost, and cannon towers to protect the Dragon Crystal from ten monster waves.",
+    "category": "Strategy",
+    "players": "Solo",
+    "detail": "Tower defence · 10 waves",
+    "icon": "./games/dragon-keep/icon.svg",
+    "cover": "./games/dragon-keep/cover.svg",
+    "href": "./games/dragon-keep/",
+    "featured": false
+  },
+  {
+    "slug": "ghost-village",
+    "name": "Ghost Village",
+    "description": "Join three ninjas and the Death Ninja Gang to protect an ancient mountain village from invading ghosts.",
+    "category": "Action",
+    "players": "Solo",
+    "detail": "Ninjas vs. ghosts",
+    "icon": "./games/ghost-village/icon.svg",
+    "cover": "./games/ghost-village/cover.svg",
+    "href": "./games/ghost-village/",
+    "featured": false
+  },
+  {
+    "slug": "iron-flight",
+    "name": "Iron Flight",
+    "description": "Fly through the skyline, dodge enemy drones, and collect glowing energy cores to beat your best score.",
+    "category": "Action",
+    "players": "Solo",
+    "detail": "Hold to fly · Release to drop",
+    "icon": "./games/iron-flight/icon.svg",
+    "cover": "./games/iron-flight/cover.svg",
+    "href": "./games/iron-flight/",
+    "featured": false
   }
 ]

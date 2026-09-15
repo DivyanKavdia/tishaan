@@ -1,0 +1,9 @@
+{
+  "name": "Iron Flight",
+  "description": "Fly through the skyline, dodge enemy drones, and collect glowing energy cores to beat your best score.",
+  "category": "Action",
+  "players": "Solo",
+  "detail": "Hold to fly · Release to drop",
+  "icon": "icon.svg",
+  "cover": "cover.svg"
+}

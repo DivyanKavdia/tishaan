@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#fff4e9">
+  <meta name="description" content="Swap, match, and make a little magic. Play 24 sweet candy puzzles in Tishaan’s Game Zone.">
+  <title>Candy Pop · Tishaan’s Game Zone</title>
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="scenery" aria-hidden="true"><i class="hill hill-one"></i><i class="hill hill-two"></i><i class="lollipop lolly-one"></i><i class="lollipop lolly-two"></i><span class="spark s1">✦</span><span class="spark s2">✧</span><span class="spark s3">✦</span></div>
+  <header class="topbar">
+    <a class="back" href="../../" aria-label="Back to Tishaan’s Game Zone"><span aria-hidden="true">←</span><span>Game Zone</span></a>
+    <a class="logo" href="./" aria-label="Candy Pop home">candy<span>pop<span class="logo-star">✦</span></span></a>
+    <div class="header-actions"><button class="icon-button" id="sound" aria-label="Turn sound off" aria-pressed="true">♫</button><button class="icon-button" id="help" aria-label="How to play">?</button></div>
+  </header>
+
+  <main class="game-layout">
+    <aside class="intro">
+      <p class="eyebrow"><span></span> TISHAAN’S SWEETEST ADVENTURE</p>
+      <h1>A little swap.<br>A lot of <em>sweet.</em></h1>
+      <p class="intro-copy">Follow the candy trail. Make magical matches. Sprinkle a little joy into your day.</p>
+      <div class="journey-card"><div class="journey-icon" aria-hidden="true">⚑</div><div><small>YOUR CANDY TRAIL</small><strong id="journey">Sugar Meadow</strong></div><span class="journey-number" id="journey-count">01 / 24</span></div>
+      <div class="trail-dots" id="trail" aria-hidden="true"></div>
+      <button class="text-button" id="map-side">Explore the level map <span aria-hidden="true">↗</span></button>
+      <p class="little-note">24 levels of feel-good fun.<br>No lives to wait for. Just one more match.</p>
+    </aside>
+
+    <section class="play-area" aria-label="Candy matching game">
+      <div class="level-row"><button class="level-pill" id="map"><span aria-hidden="true">⚑</span> LEVEL <b id="level-number">1</b><span aria-hidden="true">⌄</span></button><span id="world-name">Sugar Meadow</span><button class="restart" id="restart" aria-label="Restart this level">↻</button></div>
+      <div class="scorecard">
+        <div class="score"><span class="stat-label">SCORE</span><strong id="score">0</strong><div class="score-track" role="progressbar" aria-label="Score target" aria-valuemin="0" aria-valuemax="1000" aria-valuenow="0"><span id="progress"></span></div></div>
+        <div class="stars" aria-label="Zero stars" id="stars"><span>★</span><span>★</span><span>★</span></div>
+        <div class="moves"><strong id="moves">25</strong><span class="stat-label">MOVES</span></div>
+      </div>
+      <div class="goal-row"><span id="goal">Reach 1,000 points</span><span id="jelly-goal" hidden></span><span class="goal-check" id="goal-check" hidden>✓</span></div>
+      <div class="board-wrap"><div class="board" id="board" role="group" aria-label="Candy board. Swipe a candy, or select one and an adjacent candy. Use arrow keys to navigate and Space to select."></div><div class="celebration" id="celebration" aria-hidden="true"></div></div>
+      <div class="boosters" aria-label="Game tools">
+        <button id="hint" class="tool"><span class="tool-icon" aria-hidden="true">✧</span><span>Hint</span><small>FREE</small></button>
+        <button id="hammer" class="tool" aria-pressed="false"><span class="tool-icon hammer-icon" aria-hidden="true">⚒</span><span>Pop one</span><small id="hammer-count">2</small></button>
+        <button id="shuffle" class="tool"><span class="tool-icon" aria-hidden="true">⤨</span><span>Shuffle</span><small id="shuffle-count">2</small></button>
+      </div>
+      <p class="game-message" id="message" role="status" aria-live="polite">Swipe a candy to match 3 of the same kind.</p>
+    </section>
+
+    <aside class="recipe-card">
+      <span class="recipe-badge">THE RECIPE FOR MAGIC</span><h2>Sweet moves<span>✦</span></h2>
+      <div class="recipe"><div class="recipe-art"><i class="mini rose"></i><i class="mini rose"></i><i class="mini rose"></i></div><div><b>Match 3</b><p>A delicious little pop.</p></div></div>
+      <div class="recipe"><div class="recipe-art"><i class="mini blue stripe"></i><span>↗</span></div><div><b>Match 4</b><p>A whole line of magic.</p></div></div>
+      <div class="recipe"><div class="recipe-art"><i class="mini orange wrapped"></i><span>✷</span></div><div><b>Make an L or T</b><p>A burst all around.</p></div></div>
+      <div class="recipe"><div class="recipe-art"><i class="mini rainbow"></i><span>✧</span></div><div><b>Match 5 in a line</b><p>Pop an entire color!</p></div></div>
+      <p class="recipe-tip">Psst… swap two special candies for an even bigger surprise.</p>
+    </aside>
+  </main>
+  <footer class="page-footer"><span>MADE FOR LITTLE MOMENTS OF JOY</span><span>SWAP. MATCH. SMILE. <b>✳</b></span></footer>
+
+  <dialog id="modal" aria-labelledby="modal-title"><div class="modal-card"><button class="modal-close icon-button" id="modal-close" aria-label="Close dialog">×</button><div id="modal-art" class="modal-art" aria-hidden="true">✦</div><p class="eyebrow" id="modal-kicker">LET’S MAKE SOME MAGIC</p><h2 id="modal-title">Hello, sweet tooth.</h2><div id="modal-content"></div><button class="primary" id="modal-primary">Let’s play <span aria-hidden="true">→</span></button><button class="secondary" id="modal-secondary" hidden>Level map</button></div></dialog>
+  <noscript><p class="noscript">Enable JavaScript to play Candy Pop.</p></noscript>
+  <script type="module" src="./game.js"></script>
+</body>
+</html>
