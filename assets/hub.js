@@ -1,12 +1,38 @@
 const grid = document.getElementById('game-grid');
 
+// Keep the landing page in sync with newly registered games. The original
+// homepage contains static cards, so inject Monterra here until the hub is
+// migrated to fully catalog-driven rendering.
+if (grid && !grid.querySelector('a[href="./games/monterra/"]')) {
+  const card = document.createElement('article');
+  card.className = 'game-card';
+  card.dataset.genre = 'Adventure';
+  card.dataset.search = 'monterra wilds adventure explore catch battle evolve elemental creatures monster evolution';
+  card.innerHTML = `
+    <a class="game-link" href="./games/monterra/" aria-label="Play Monterra Wilds">
+      <div class="game-cover">
+        <img src="./games/monterra/cover.svg" width="960" height="640" alt="" loading="eager">
+        <span class="game-badge">NEW ADVENTURE</span>
+        <span class="cover-mark" aria-hidden="true">PRESS PLAY ↗</span>
+      </div>
+      <div class="game-info">
+        <div class="game-heading">
+          <img class="game-icon" src="./games/monterra/icon.svg" width="46" height="46" alt="" loading="eager">
+          <div><h3>Monterra Wilds</h3><div class="game-meta"><span>Adventure</span><i aria-hidden="true"></i><span>Solo</span></div></div>
+        </div>
+        <p class="game-description">Explore a living wilderness, discover elemental creatures, battle, catch them, level up and unlock powerful evolutions.</p>
+        <div class="game-bottom"><span class="game-detail">Explore · Catch · Battle · Evolve</span><span class="play-now">Play now <span aria-hidden="true">↗</span></span></div>
+      </div>
+    </a>`;
+  grid.prepend(card);
+}
+
 const cards = [...document.querySelectorAll('.game-card')];
 const search = document.getElementById('game-search');
 const filtersRoot = document.querySelector('.filters');
 const status = document.getElementById('search-status');
 let category = 'All';
 
-// Keep category buttons and counts in sync with whatever games are currently registered.
 const categoryCounts = cards.reduce((map, card) => {
   map.set(card.dataset.genre, (map.get(card.dataset.genre) || 0) + 1);
   return map;
@@ -62,8 +88,6 @@ surprise.hidden = cards.length === 0;
 document.getElementById('library-tools').hidden = false;
 filterGames(false);
 
-// Android PWA install experience. Chrome fires beforeinstallprompt only when the
-// site passes its installability checks, so the button appears only when useful.
 let installPrompt = null;
 const runningStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 const installButton = document.createElement('button');
