@@ -1,1 +1,301 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Monterra Wilds</title><style>*{box-sizing:border-box}body{margin:0;font-family:system-ui;background:#071b20;color:#fff;overflow:hidden}#g{width:100vw;height:100vh;display:block}.hud{position:fixed;inset:12px 12px auto;display:flex;justify-content:space-between;pointer-events:none}.pill{background:#061318dd;border:1px solid #ffffff25;border-radius:18px;padding:9px 13px;font-weight:800}.controls{position:fixed;bottom:22px;left:18px;right:18px;display:flex;justify-content:space-between;align-items:end}.pad{display:grid;grid-template-columns:55px 55px 55px;gap:5px}.pad button:nth-child(1){grid-column:2}.pad button{width:55px;height:55px}.actions{display:grid;gap:8px}.actions button{min-width:105px}button{border:0;border-radius:18px;background:#ffffffd9;font-weight:900;font-size:16px;padding:14px;touch-action:none}.panel{position:fixed;inset:0;background:#041216e8;display:grid;place-items:center;padding:20px}.card{max-width:420px;width:100%;background:#102b2f;border:1px solid #ffffff25;border-radius:28px;padding:24px;text-align:center}.monster{font-size:76px;filter:drop-shadow(0 8px 8px #0008)}.bar{height:12px;background:#0005;border-radius:9px;overflow:hidden}.bar i{display:block;height:100%;background:#74e28b}.hidden{display:none}.small{opacity:.72;font-size:13px}</style></head><body><canvas id="g"></canvas><div class="hud"><div class="pill">MONTERra WILDS<br><span id="zone" class="small">Verdant Trail</span></div><div class="pill">⭐ <span id="lvl">5</span> · Orbs <span id="orbs">8</span></div></div><div class="controls"><div class="pad"><button data-d="u">▲</button><button data-d="l">◀</button><button data-d="d">▼</button><button data-d="r">▶</button></div><div class="actions"><button id="team">TEAM</button><button id="scan">SCAN</button></div></div><div id="modal" class="panel hidden"><div class="card"><div id="mon" class="monster">🔥</div><h1 id="name">Embercub</h1><p id="desc">A wild creature appeared!</p><div class="bar"><i id="hp" style="width:100%"></i></div><p id="stats"></p><button id="attack">ATTACK</button> <button id="catch">THROW ORB</button><p><button id="close">RUN</button></p></div></div><script>const c=document.querySelector('#g'),x=c.getContext('2d');let W,H,p={x:8,y:8},orbs=8,level=5,owned=[{n:'Embercub',e:'🔥',lv:5,xp:0,stage:0}],wild=null;const mons=[['Embercub','🔥','Pyrolynx','🦁','Volcarion','🐲'],['Spriglet','🌱','Florabbit','🐇','Verdantusk','🐘'],['Aquaff','💧','Tideruff','🦭','Leviwave','🐋'],['Voltkit','⚡','Stormcat','🐆','Thundrake','🐉'],['Pebblit','🪨','Cragoon','🦏','Titanrock','🦖']];function size(){W=c.width=innerWidth*devicePixelRatio;H=c.height=innerHeight*devicePixelRatio;x.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);draw()}onresize=size;function draw(){let w=innerWidth,h=innerHeight;x.fillStyle='#123d32';x.fillRect(0,0,w,h);for(let i=0;i<70;i++){let a=(i*83)%w,b=(i*137)%h;x.fillStyle=i%4?'#1d5940':'#75a94d';x.beginPath();x.arc(a,b,8+(i%5)*3,0,7);x.fill()}x.fillStyle='#c5a86a';x.fillRect(w*.18,0,w*.18,h);x.fillRect(0,h*.42,w,h*.14);x.fillStyle='#62b9d4';x.fillRect(w*.72,0,w*.12,h);x.fillStyle='#fff';x.font='36px system-ui';x.fillText('🧢',p.x/16*w-18,p.y/16*h+12);x.font='24px system-ui';x.fillText('🌲',w*.1,h*.2);x.fillText('🏕️',w*.5,h*.22);x.fillText('⛰️',w*.82,h*.35)}function move(d){if(d==='u')p.y=Math.max(1,p.y-1);if(d==='d')p.y=Math.min(15,p.y+1);if(d==='l')p.x=Math.max(1,p.x-1);if(d==='r')p.x=Math.min(15,p.x+1);draw();if(Math.random()<.18)encounter()}document.querySelectorAll('[data-d]').forEach(b=>{b.onpointerdown=()=>move(b.dataset.d)});function encounter(){let m=mons[Math.random()*mons.length|0],s=Math.random()<.1?1:0;wild={m,stage:s,hp:100,lv:3+Math.random()*6|0};mon.textContent=m[s*2+1];name.textContent=m[s*2];desc.textContent='A wild '+m[s*2]+' appeared in the tall grass!';stats.textContent='Lv. '+wild.lv+' · Wild';hp.style.width='100%';modal.classList.remove('hidden')}attack.onclick=()=>{if(!wild)return;wild.hp-=25+Math.random()*25;hp.style.width=Math.max(0,wild.hp)+'%';if(wild.hp<=0){gain(30);desc.textContent='Victory! Your creature gained experience.';attack.disabled=true}};catch.onclick=()=>{if(!wild||orbs<1)return;orbs--;document.querySelector('#orbs').textContent=orbs;let chance=.35+(100-wild.hp)/130;if(Math.random()<chance){owned.push({n:wild.m[wild.stage*2],e:wild.m[wild.stage*2+1],lv:wild.lv,xp:0,stage:wild.stage,m:wild.m});desc.textContent='Caught! '+wild.m[wild.stage*2]+' joined your team!';catch.disabled=true}else desc.textContent='It broke free! Weaken it and try again.'};function gain(v){let a=owned[0];a.xp+=v;if(a.xp>=60){a.xp-=60;a.lv++;level=a.lv;lvl.textContent=level;if((a.lv===7||a.lv===12)&&a.stage<2){a.stage++;let m=a.m||mons[0];a.n=m[a.stage*2];a.e=m[a.stage*2+1];desc.textContent='EVOLUTION! Your partner evolved into '+a.n+'!';mon.textContent=a.e;name.textContent=a.n}}}close.onclick=()=>{modal.classList.add('hidden');attack.disabled=catch.disabled=false;wild=null};scan.onclick=encounter;team.onclick=()=>{let a=owned[0];wild=null;mon.textContent=a.e;name.textContent=a.n;desc.textContent='Your lead companion';stats.textContent='Lv. '+a.lv+' · XP '+a.xp+'/60 · Team '+owned.length;hp.style.width='100%';attack.style.display=catch.style.display='none';modal.classList.remove('hidden')};document.querySelector('#close').addEventListener('click',()=>{attack.style.display=catch.style.display='inline-block'});addEventListener('keydown',e=>move({ArrowUp:'u',ArrowDown:'d',ArrowLeft:'l',ArrowRight:'r'}[e.key]||''));size()</script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+  <meta name="theme-color" content="#071b20">
+  <title>Monterra Wilds</title>
+  <style>
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#071b20;color:#fff;font-family:Inter,system-ui,-apple-system,sans-serif}
+    button{font:inherit}
+    #game{width:100vw;height:100vh;display:block;touch-action:none}
+    .hud{position:fixed;z-index:5;inset:calc(10px + env(safe-area-inset-top)) 10px auto;display:flex;justify-content:space-between;gap:8px;pointer-events:none}
+    .pill{background:#061318e8;border:1px solid #ffffff26;box-shadow:0 8px 28px #0006;border-radius:17px;padding:9px 12px;font-weight:900;font-size:13px;backdrop-filter:blur(10px)}
+    .small{opacity:.7;font-size:11px;font-weight:700}
+    .controls{position:fixed;z-index:6;left:14px;right:14px;bottom:calc(14px + env(safe-area-inset-bottom));display:flex;justify-content:space-between;align-items:end;pointer-events:none}
+    .pad,.actions{pointer-events:auto}
+    .pad{display:grid;grid-template-columns:54px 54px 54px;gap:6px}
+    .pad button:nth-child(1){grid-column:2}
+    .pad button{width:54px;height:54px;padding:0}
+    .actions{display:grid;gap:8px}
+    button{border:0;border-radius:17px;background:#f5f7ef;color:#0a2827;font-weight:950;font-size:14px;padding:13px 16px;box-shadow:0 7px 0 #9cb5a8;touch-action:manipulation}
+    button:active{transform:translateY(4px);box-shadow:0 3px 0 #9cb5a8}
+    button:disabled{opacity:.45;transform:none}
+    .actions button{min-width:104px}
+    .panel{position:fixed;z-index:20;inset:0;background:#031115eb;display:grid;place-items:center;padding:18px;backdrop-filter:blur(10px)}
+    .panel.hidden{display:none}
+    .card{max-width:430px;width:100%;max-height:92vh;overflow:auto;background:linear-gradient(160deg,#143a39,#0c2327);border:1px solid #ffffff26;border-radius:28px;padding:22px;text-align:center;box-shadow:0 25px 80px #000a}
+    .monster{font-size:82px;line-height:1.1;filter:drop-shadow(0 12px 14px #0008);animation:float 1.8s ease-in-out infinite alternate}
+    @keyframes float{to{transform:translateY(-8px)}}
+    h1{margin:6px 0 4px;font-size:29px}.desc{min-height:42px;color:#d9ede3}.stats{font-weight:800;font-size:13px;opacity:.82}
+    .bar{height:13px;background:#0006;border-radius:99px;overflow:hidden;margin:10px 0}.bar i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#69e287,#c8f66a);transition:width .25s}
+    .battle-actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}.secondary{background:#b8dbe1}.danger{background:#ffd0c7}.evolve{background:#fff0a3}
+    .team-list{display:grid;gap:9px;text-align:left;margin:14px 0}.team-row{display:flex;align-items:center;gap:10px;padding:10px;border-radius:16px;background:#ffffff10}.team-row strong{display:block}.team-row span{font-size:12px;opacity:.7}.team-emoji{font-size:30px}
+    .toast{position:fixed;z-index:30;left:50%;top:calc(76px + env(safe-area-inset-top));transform:translateX(-50%) translateY(-12px);padding:10px 14px;border-radius:999px;background:#05171ae8;border:1px solid #ffffff28;font-weight:800;font-size:13px;opacity:0;pointer-events:none;transition:.2s}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+    .home{position:fixed;z-index:7;left:12px;bottom:calc(205px + env(safe-area-inset-bottom));text-decoration:none;background:#061318d9;color:#fff;border:1px solid #ffffff24;padding:8px 10px;border-radius:12px;font-size:12px;font-weight:800}
+    @media (min-width:700px){.pad{grid-template-columns:62px 62px 62px}.pad button{width:62px;height:62px}.actions button{min-width:125px}}
+  </style>
+</head>
+<body>
+  <canvas id="game" aria-label="Monterra Wilds game world"></canvas>
+  <div class="hud">
+    <div class="pill">MONTERRA WILDS<br><span class="small" id="zoneLabel">Verdant Trail</span></div>
+    <div class="pill">⭐ Lv <span id="levelLabel">5</span> · Orbs <span id="orbLabel">8</span></div>
+  </div>
+  <a class="home" href="../../">← GAME ZONE</a>
+  <div class="controls">
+    <div class="pad" aria-label="Movement controls">
+      <button type="button" data-move="up" aria-label="Move up">▲</button>
+      <button type="button" data-move="left" aria-label="Move left">◀</button>
+      <button type="button" data-move="down" aria-label="Move down">▼</button>
+      <button type="button" data-move="right" aria-label="Move right">▶</button>
+    </div>
+    <div class="actions">
+      <button type="button" id="teamButton">TEAM</button>
+      <button type="button" id="scanButton">SCAN</button>
+    </div>
+  </div>
+
+  <div id="modal" class="panel hidden" role="dialog" aria-modal="true" aria-labelledby="creatureName">
+    <div class="card">
+      <div id="creatureEmoji" class="monster">🔥</div>
+      <h1 id="creatureName">Embercub</h1>
+      <p id="description" class="desc">A wild creature appeared!</p>
+      <div id="healthBar" class="bar"><i id="healthFill"></i></div>
+      <p id="stats" class="stats"></p>
+      <div id="teamList" class="team-list"></div>
+      <div class="battle-actions">
+        <button type="button" id="attackButton">ATTACK</button>
+        <button type="button" id="catchButton" class="secondary">THROW ORB</button>
+        <button type="button" id="evolveButton" class="evolve" hidden>EVOLVE</button>
+      </div>
+      <p><button type="button" id="closeButton" class="danger">CLOSE</button></p>
+    </div>
+  </div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    (() => {
+      'use strict';
+      const canvas = document.getElementById('game');
+      const ctx = canvas.getContext('2d');
+      const modal = document.getElementById('modal');
+      const creatureEmoji = document.getElementById('creatureEmoji');
+      const creatureName = document.getElementById('creatureName');
+      const description = document.getElementById('description');
+      const healthBar = document.getElementById('healthBar');
+      const healthFill = document.getElementById('healthFill');
+      const stats = document.getElementById('stats');
+      const teamList = document.getElementById('teamList');
+      const attackButton = document.getElementById('attackButton');
+      const catchButton = document.getElementById('catchButton');
+      const evolveButton = document.getElementById('evolveButton');
+      const closeButton = document.getElementById('closeButton');
+      const teamButton = document.getElementById('teamButton');
+      const scanButton = document.getElementById('scanButton');
+      const orbLabel = document.getElementById('orbLabel');
+      const levelLabel = document.getElementById('levelLabel');
+      const zoneLabel = document.getElementById('zoneLabel');
+      const toast = document.getElementById('toast');
+
+      const families = [
+        {type:'Flame', forms:[['Embercub','🔥'],['Pyrolynx','🦁'],['Volcarion','🐲']]},
+        {type:'Leaf', forms:[['Spriglet','🌱'],['Florabbit','🐇'],['Verdantusk','🐘']]},
+        {type:'Tide', forms:[['Aquaff','💧'],['Tideruff','🦭'],['Leviwave','🐋']]},
+        {type:'Spark', forms:[['Voltkit','⚡'],['Stormcat','🐆'],['Thundrake','🐉']]},
+        {type:'Stone', forms:[['Pebblit','🪨'],['Cragoon','🦏'],['Titanrock','🦖']]}
+      ];
+      const SAVE_KEY = 'monterra-wilds-save-v2';
+      const defaults = {
+        position:{x:8,y:8}, orbs:8,
+        team:[{family:0,stage:0,level:5,xp:0}],
+        steps:0, wins:0, catches:0
+      };
+      let state;
+      try {
+        const stored = JSON.parse(localStorage.getItem(SAVE_KEY) || 'null');
+        state = stored && stored.position && Array.isArray(stored.team) ? stored : structuredClone(defaults);
+      } catch { state = structuredClone(defaults); }
+      let wild = null;
+      let mode = 'battle';
+      let toastTimer = null;
+
+      function save(){ localStorage.setItem(SAVE_KEY, JSON.stringify(state)); }
+      function lead(){ return state.team[0]; }
+      function form(member){ return families[member.family].forms[member.stage]; }
+      function showToast(message){
+        toast.textContent = message;
+        toast.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.classList.remove('show'), 1500);
+      }
+      function syncHud(){
+        orbLabel.textContent = state.orbs;
+        levelLabel.textContent = lead().level;
+        const x = state.position.x;
+        zoneLabel.textContent = x < 6 ? 'Verdant Trail' : x < 11 ? 'Crystal Crossing' : 'Storm Ridge';
+      }
+
+      function resize(){
+        const ratio = Math.min(devicePixelRatio || 1, 2);
+        canvas.width = Math.round(innerWidth * ratio);
+        canvas.height = Math.round(innerHeight * ratio);
+        ctx.setTransform(ratio,0,0,ratio,0,0);
+        draw();
+      }
+
+      function draw(){
+        const w = innerWidth, h = innerHeight;
+        ctx.fillStyle='#123d32'; ctx.fillRect(0,0,w,h);
+        for(let i=0;i<90;i++){
+          const a=(i*83)%w, b=(i*137)%h;
+          ctx.fillStyle=i%4?'#1d5940':'#75a94d';
+          ctx.beginPath();ctx.arc(a,b,7+(i%5)*3,0,Math.PI*2);ctx.fill();
+        }
+        ctx.fillStyle='#c5a86a';ctx.fillRect(w*.18,0,w*.18,h);ctx.fillRect(0,h*.42,w,h*.14);
+        ctx.fillStyle='#62b9d4';ctx.fillRect(w*.72,0,w*.12,h);
+        ctx.font='25px system-ui';ctx.fillText('🌲',w*.08,h*.18);ctx.fillText('🏕️',w*.50,h*.22);ctx.fillText('⛰️',w*.84,h*.34);ctx.fillText('🌲',w*.60,h*.70);
+        const px=state.position.x/16*w, py=state.position.y/16*h;
+        ctx.font='38px system-ui';ctx.fillText('🧢',px-18,py+13);
+      }
+
+      function move(direction){
+        if(!modal.classList.contains('hidden')) return;
+        const p=state.position;
+        if(direction==='up') p.y=Math.max(1,p.y-1);
+        if(direction==='down') p.y=Math.min(15,p.y+1);
+        if(direction==='left') p.x=Math.max(1,p.x-1);
+        if(direction==='right') p.x=Math.min(15,p.x+1);
+        state.steps++;
+        if(state.steps % 12 === 0) state.orbs = Math.min(20, state.orbs + 1);
+        save();syncHud();draw();
+        if(Math.random()<0.20) encounter();
+      }
+
+      function setBattleButtons(show){
+        attackButton.hidden=!show;
+        catchButton.hidden=!show;
+        healthBar.hidden=!show;
+        evolveButton.hidden=true;
+        teamList.replaceChildren();
+      }
+
+      function encounter(){
+        const familyIndex=Math.floor(Math.random()*families.length);
+        const stage=Math.random()<0.10?1:0;
+        wild={family:familyIndex,stage,level:3+Math.floor(Math.random()*7),hp:100};
+        const f=families[familyIndex].forms[stage];
+        creatureEmoji.textContent=f[1];
+        creatureName.textContent=f[0];
+        description.textContent=`A wild ${f[0]} appeared! Weaken it, then throw an orb.`;
+        stats.textContent=`Lv. ${wild.level} · ${families[familyIndex].type} type`;
+        healthFill.style.width='100%';
+        attackButton.disabled=false;catchButton.disabled=state.orbs<1;
+        setBattleButtons(true);
+        mode='battle';
+        modal.classList.remove('hidden');
+      }
+
+      function gainXp(amount){
+        const member=lead();
+        member.xp+=amount;
+        while(member.xp>=60){member.xp-=60;member.level++;}
+        save();syncHud();
+        if(member.stage<2 && ((member.stage===0 && member.level>=7)||(member.stage===1 && member.level>=12))){
+          evolveButton.hidden=false;
+          description.textContent=`${form(member)[0]} is ready to evolve!`;
+        }
+      }
+
+      function evolveLead(){
+        const member=lead();
+        if(member.stage>=2) return;
+        const allowed=(member.stage===0&&member.level>=7)||(member.stage===1&&member.level>=12);
+        if(!allowed) return;
+        member.stage++;
+        const next=form(member);
+        creatureEmoji.textContent=next[1];
+        creatureName.textContent=next[0];
+        description.textContent=`Evolution complete! Your partner became ${next[0]}!`;
+        evolveButton.hidden=true;
+        save();syncHud();showToast('Evolution complete!');
+      }
+
+      function attack(){
+        if(!wild||wild.hp<=0) return;
+        const damage=28+Math.floor(Math.random()*28);
+        wild.hp=Math.max(0,wild.hp-damage);
+        healthFill.style.width=`${wild.hp}%`;
+        description.textContent=`${form(lead())[0]} dealt ${damage} damage.`;
+        if(wild.hp===0){
+          state.wins++;
+          gainXp(35);
+          description.textContent=`Victory! ${form(lead())[0]} gained 35 XP.`;
+          attackButton.disabled=true;catchButton.disabled=true;
+          showToast('Battle won +35 XP');
+        }
+      }
+
+      function catchWild(){
+        if(!wild||state.orbs<1||wild.hp<=0) return;
+        state.orbs--;syncHud();
+        const chance=.32+(100-wild.hp)/125;
+        if(Math.random()<chance){
+          state.team.push({family:wild.family,stage:wild.stage,level:wild.level,xp:0});
+          state.catches++;
+          const caught=families[wild.family].forms[wild.stage][0];
+          description.textContent=`Caught! ${caught} joined your team.`;
+          catchButton.disabled=true;attackButton.disabled=true;
+          save();showToast(`${caught} caught!`);
+        }else{
+          description.textContent='It broke free! Lower its health and try again.';
+          catchButton.disabled=state.orbs<1;
+          save();
+        }
+      }
+
+      function showTeam(){
+        mode='team';wild=null;setBattleButtons(false);
+        const first=lead(), leadForm=form(first);
+        creatureEmoji.textContent=leadForm[1];creatureName.textContent=leadForm[0];
+        description.textContent='Your Monterra team';
+        stats.textContent=`${state.team.length} creature${state.team.length===1?'':'s'} · ${state.wins} wins · ${state.catches} catches`;
+        for(const member of state.team.slice(0,8)){
+          const row=document.createElement('div');row.className='team-row';
+          const icon=document.createElement('div');icon.className='team-emoji';icon.textContent=form(member)[1];
+          const text=document.createElement('div');
+          const strong=document.createElement('strong');strong.textContent=form(member)[0];
+          const meta=document.createElement('span');meta.textContent=`Lv. ${member.level} · XP ${member.xp}/60 · ${families[member.family].type}`;
+          text.append(strong,meta);row.append(icon,text);teamList.appendChild(row);
+        }
+        const ready=first.stage<2&&((first.stage===0&&first.level>=7)||(first.stage===1&&first.level>=12));
+        evolveButton.hidden=!ready;
+        modal.classList.remove('hidden');
+      }
+
+      function closeModal(){
+        modal.classList.add('hidden');
+        wild=null;mode='battle';
+        attackButton.disabled=false;catchButton.disabled=false;evolveButton.hidden=true;
+        teamList.replaceChildren();
+      }
+
+      document.querySelectorAll('[data-move]').forEach(button=>button.addEventListener('pointerdown',()=>move(button.dataset.move)));
+      attackButton.addEventListener('click',attack);
+      catchButton.addEventListener('click',catchWild);
+      evolveButton.addEventListener('click',evolveLead);
+      closeButton.addEventListener('click',closeModal);
+      scanButton.addEventListener('click',()=>{if(modal.classList.contains('hidden')) encounter();});
+      teamButton.addEventListener('click',showTeam);
+      window.addEventListener('keydown',event=>{
+        const map={ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',w:'up',s:'down',a:'left',d:'right'};
+        if(map[event.key]){event.preventDefault();move(map[event.key]);}
+        if(event.key==='Escape') closeModal();
+      });
+      window.addEventListener('resize',resize);
+      syncHud();resize();
+    })();
+  </script>
+</body>
+</html>
