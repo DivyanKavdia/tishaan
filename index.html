@@ -40,13 +40,19 @@
       <div class="arcade-strip" aria-hidden="true"><span>ONE TAP TO PLAY</span><b>✳</b><span>BIG LITTLE ADVENTURES</span><b>✳</b><span>YOUR ARCADE. YOUR RULES.</span><b>✳</b></div>
 
       <section class="library" id="games" aria-labelledby="games-title">
-        <div class="section-heading"><div><div class="eyebrow section-kicker">THE GOOD STUFF</div><h2 id="games-title">Choose your adventure<span>.</span></h2></div><p id="game-count"><!-- GAME_COUNT_START -->2 games ready to play<!-- GAME_COUNT_END --></p></div>
+        <div class="section-heading"><div><div class="eyebrow section-kicker">THE GOOD STUFF</div><h2 id="games-title">Choose your adventure<span>.</span></h2></div><p id="game-count"><!-- GAME_COUNT_START -->3 games ready to play<!-- GAME_COUNT_END --></p></div>
         <div class="library-tools" id="library-tools" hidden>
-          <div class="filters" role="group" aria-label="Filter games by category"><!-- GAME_FILTERS_START --><button class="filter-button" data-category="All" aria-pressed="true">All games<span>2</span></button><button class="filter-button" data-category="Action" aria-pressed="false">Action<span>2</span></button><!-- GAME_FILTERS_END --></div>
+          <div class="filters" role="group" aria-label="Filter games by category"><!-- GAME_FILTERS_START --><button class="filter-button" data-category="All" aria-pressed="true">All games<span>3</span></button><button class="filter-button" data-category="Action" aria-pressed="false">Action<span>3</span></button><!-- GAME_FILTERS_END --></div>
           <label class="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg><span class="sr-only">Search games</span><input id="game-search" type="search" placeholder="Find your next game" autocomplete="off" maxlength="100"></label>
         </div>
         <div class="arcade-shelf">
-          <div class="game-grid" id="game-grid" data-count="2"><!-- GAME_CARDS_START -->
+          <div class="game-grid" id="game-grid" data-count="3"><!-- GAME_CARDS_START -->
+            <article class="game-card" data-genre="Action" data-search="ghost village ninja action ancient village death ninja gang ghosts spirits defense">
+              <a class="game-link" href="./games/ghost-village/" aria-label="Play Ghost Village">
+                <div class="game-cover"><img src="./games/ghost-village/cover.svg" width="960" height="640" alt="" loading="lazy"><span class="game-badge">NEW ADVENTURE</span><span class="cover-mark" aria-hidden="true">PRESS PLAY ↗</span></div>
+                <div class="game-info"><div class="game-heading"><img class="game-icon" src="./games/ghost-village/icon.svg" width="46" height="46" alt="" loading="lazy"><div><h3>Ghost Village</h3><div class="game-meta"><span>Action</span><i aria-hidden="true"></i><span>Ninja Defense</span></div></div></div><p class="game-description">Three free ninjas and the Death Ninja Gang defend an ancient village when ghosts attack from the mountains.</p><div class="game-bottom"><span class="game-detail">Fight endless ghost waves</span><span class="play-now">Play now <span aria-hidden="true">↗</span></span></div></div>
+              </a>
+            </article>
             <article class="game-card" data-genre="Action" data-search="iron flight action flying hero dodge drones collect energy cores mobile arcade">
               <a class="game-link" href="./games/iron-flight/" aria-label="Play Iron Flight">
                 <div class="game-cover"><img src="./games/iron-flight/cover.svg" width="960" height="640" alt="" loading="lazy"><span class="game-badge">NEW MISSION</span><span class="cover-mark" aria-hidden="true">PRESS PLAY ↗</span></div>
@@ -61,7 +67,7 @@
             </article>
           <!-- GAME_CARDS_END --></div>
           <div class="empty-state" id="empty-state" hidden><span aria-hidden="true">⌕</span><h3>No games found.</h3><p>Try another name or category.</p><button class="text-button" id="clear-search">Show all games <span aria-hidden="true">↗</span></button></div>
-          <aside class="next-up"><div class="next-up-top"><span>NEXT LEVEL</span><span aria-hidden="true">↗</span></div><div class="pixel-spark" aria-hidden="true"><svg viewBox="0 0 100 100"><path d="M40 0h20v30h10V20h10v10H70v10h30v20H70v10h10v10H70V70H60v30H40V70H30v10H20V70h10V60H0V40h30V30H20V20h10v10h10Z"/></svg></div><h3>More worlds.<br>More ways to play.</h3><p>The adventure doesn’t end here.<br>New games will land in this zone.</p><span class="coming-label"><i></i> MORE GOOD TIMES AHEAD</span></aside>
+          <aside class="next-up"><div class="next-up-top"><span>NEXT LEVEL</span><span aria-hidden="true">↗</span></div><div class="pixel-spark" aria-hidden="true"><svg viewBox="0 0 100 100"><path d="M40 0h20v30h10V20h10v10H70v10h30v20H70v10h10v10H70V70H60v30H40V70H30v10H20V70h10V60H0V40h30V30H20V20h10v10h10V30H40Z"/></svg></div><h3>More worlds.<br>More ways to play.</h3><p>The adventure doesn’t end here.<br>New games will land in this zone.</p><span class="coming-label"><i></i> MORE GOOD TIMES AHEAD</span></aside>
         </div>
         <p class="search-status sr-only" id="search-status" role="status" aria-live="polite"></p>
       </section>
