@@ -1,5 +1,5 @@
 const CACHE_PREFIX = 'tishaan-game-zone-';
-const CACHE = 'tishaan-game-zone-a56f314b5aa9';
+const CACHE = 'tishaan-game-zone-world-strike-1';
 const BASE = new URL('./', self.location.href);
 const ASSETS = ['./', './index.html', './assets/hub.css', './assets/hub.js', './assets/controller.svg', './games/catalog.json', './icon.svg', './icon-192.png', './icon-512.png', './manifest.webmanifest'];
 
