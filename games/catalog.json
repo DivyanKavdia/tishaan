@@ -1,122 +1,44 @@
 [
   {
-    "slug": "pride-lands",
-    "name": "Pride Lands",
-    "description": "Become a lion of the savanna. Hunt for strength, defend your pride, roar down rival packs and rise through twelve cinematic missions.",
-    "category": "Adventure",
+    "slug": "doom-sovereign",
+    "name": "Doom Sovereign",
+    "description": "Rule the battlefield as a masked techno-sorcerer. Defend a mountain capital with arc energy, mystical wards and devastating hex attacks.",
+    "category": "Action",
     "players": "Solo",
-    "detail": "12 missions · 3 lions · survival combat",
-    "icon": "./games/pride-lands/icon.svg",
-    "cover": "./games/pride-lands/cover.svg",
-    "href": "./games/pride-lands/",
+    "detail": "12 waves · 3 powers · boss battles",
+    "icon": "./games/doom-sovereign/icon.svg",
+    "cover": "./games/doom-sovereign/cover.svg",
+    "href": "./games/doom-sovereign/",
     "featured": true
   },
   {
-    "slug": "avengers-arena",
-    "name": "Avengers Arena",
-    "description": "Four heroes. A rooftop tournament. Master combos, choose a combat perk and climb twelve increasingly demanding battles.",
-    "category": "Action",
-    "players": "Solo vs AI",
-    "detail": "12 stages · 3 combat perks",
-    "icon": "./games/avengers-arena/icon.svg",
-    "cover": "./games/avengers-arena/cover.webp",
-    "href": "./games/avengers-arena/",
-    "featured": true
+    "slug": "pride-lands", "name": "Pride Lands", "description": "Become a lion of the savanna. Hunt for strength, defend your pride, roar down rival packs and rise through twelve cinematic missions.", "category": "Adventure", "players": "Solo", "detail": "12 missions · 3 lions · survival combat", "icon": "./games/pride-lands/icon.svg", "cover": "./games/pride-lands/cover.svg", "href": "./games/pride-lands/", "featured": true
   },
   {
-    "slug": "iron-flight",
-    "name": "Iron Flight",
-    "description": "Take flight above the city. Weave through rings, fight drones and face skyborne bosses with your chosen suit module.",
-    "category": "Action",
-    "players": "Solo",
-    "detail": "12 flights · 3 suit modules",
-    "icon": "./games/iron-flight/icon.svg",
-    "cover": "./games/iron-flight/cover.webp",
-    "href": "./games/iron-flight/",
-    "featured": true
+    "slug": "avengers-arena", "name": "Avengers Arena", "description": "Four heroes. A rooftop tournament. Master combos, choose a combat perk and climb twelve increasingly demanding battles.", "category": "Action", "players": "Solo vs AI", "detail": "12 stages · 3 combat perks", "icon": "./games/avengers-arena/icon.svg", "cover": "./games/avengers-arena/cover.webp", "href": "./games/avengers-arena/", "featured": true
   },
   {
-    "slug": "monterra",
-    "name": "Monterra Wilds",
-    "description": "Explore a living 3D island. Befriend elemental creatures, evolve your team and challenge six powerful guardians.",
-    "category": "Adventure",
-    "players": "Solo",
-    "detail": "6 guardians · 15 creature forms",
-    "icon": "./games/monterra/icon.svg",
-    "cover": "./games/monterra/cover.webp",
-    "href": "./games/monterra/",
-    "featured": true
+    "slug": "iron-flight", "name": "Iron Flight", "description": "Take flight above the city. Weave through rings, fight drones and face skyborne bosses with your chosen suit module.", "category": "Action", "players": "Solo", "detail": "12 flights · 3 suit modules", "icon": "./games/iron-flight/icon.svg", "cover": "./games/iron-flight/cover.webp", "href": "./games/iron-flight/", "featured": true
   },
   {
-    "slug": "candy-pop",
-    "name": "Candy Pop",
-    "description": "Glossy candies, layered crystal jelly and colourful recipes. Make clever combos across six delicious worlds.",
-    "category": "Puzzle",
-    "players": "Solo",
-    "detail": "36 levels · 3 challenges",
-    "icon": "./games/candy-pop/icon.svg",
-    "cover": "./games/candy-pop/cover.webp",
-    "href": "./games/candy-pop/",
-    "featured": false
+    "slug": "monterra", "name": "Monterra Wilds", "description": "Explore a living 3D island. Befriend elemental creatures, evolve your team and challenge six powerful guardians.", "category": "Adventure", "players": "Solo", "detail": "6 guardians · 15 creature forms", "icon": "./games/monterra/icon.svg", "cover": "./games/monterra/cover.webp", "href": "./games/monterra/", "featured": true
   },
   {
-    "slug": "chikoo-bunty",
-    "name": "Chikoo & Bunty: Mischief Chase",
-    "description": "Race through sunlit streets. Jump hurdles, slide under banners and dash for laddoos in a three-lane chase.",
-    "category": "Action",
-    "players": "Solo",
-    "detail": "12 runs · 2 playable brothers",
-    "icon": "./games/chikoo-bunty/icon.svg",
-    "cover": "./games/chikoo-bunty/cover.webp",
-    "href": "./games/chikoo-bunty/",
-    "featured": false
+    "slug": "candy-pop", "name": "Candy Pop", "description": "Glossy candies, layered crystal jelly and colourful recipes. Make clever combos across six delicious worlds.", "category": "Puzzle", "players": "Solo", "detail": "36 levels · 3 challenges", "icon": "./games/candy-pop/icon.svg", "cover": "./games/candy-pop/cover.webp", "href": "./games/candy-pop/", "featured": false
   },
   {
-    "slug": "dragon-keep",
-    "name": "Dragon Keep TD",
-    "description": "Protect the Dragon Crystal. Place, upgrade and combine three tower types across four winding battlefields.",
-    "category": "Strategy",
-    "players": "Solo",
-    "detail": "12 missions · 3 tower types",
-    "icon": "./games/dragon-keep/icon.svg",
-    "cover": "./games/dragon-keep/cover.webp",
-    "href": "./games/dragon-keep/",
-    "featured": false
+    "slug": "chikoo-bunty", "name": "Chikoo & Bunty: Mischief Chase", "description": "Race through sunlit streets. Jump hurdles, slide under banners and dash for laddoos in a three-lane chase.", "category": "Action", "players": "Solo", "detail": "12 runs · 2 playable brothers", "icon": "./games/chikoo-bunty/icon.svg", "cover": "./games/chikoo-bunty/cover.webp", "href": "./games/chikoo-bunty/", "featured": false
   },
   {
-    "slug": "ghost-village",
-    "name": "Ghost Village",
-    "description": "Defend the moonlit shrine with a team of three ninjas. Switch leaders, combine abilities and face spectral bosses.",
-    "category": "Action",
-    "players": "Solo",
-    "detail": "12 missions · 3 ninja abilities",
-    "icon": "./games/ghost-village/icon.svg",
-    "cover": "./games/ghost-village/cover.webp",
-    "href": "./games/ghost-village/",
-    "featured": false
+    "slug": "dragon-keep", "name": "Dragon Keep TD", "description": "Protect the Dragon Crystal. Place, upgrade and combine three tower types across four winding battlefields.", "category": "Strategy", "players": "Solo", "detail": "12 missions · 3 tower types", "icon": "./games/dragon-keep/icon.svg", "cover": "./games/dragon-keep/cover.webp", "href": "./games/dragon-keep/", "featured": false
   },
   {
-    "slug": "iron-citadel",
-    "name": "Iron Citadel",
-    "description": "Enter a 3D industrial fortress. Find keycards, manage ammunition and defeat robot wardens on your way to the core.",
-    "category": "Shooter",
-    "players": "Solo",
-    "detail": "9 missions · 3 difficulties",
-    "icon": "./games/iron-citadel/icon.svg",
-    "cover": "./games/iron-citadel/cover.webp",
-    "href": "./games/iron-citadel/",
-    "featured": false
+    "slug": "ghost-village", "name": "Ghost Village", "description": "Defend the moonlit shrine with a team of three ninjas. Switch leaders, combine abilities and face spectral bosses.", "category": "Action", "players": "Solo", "detail": "12 missions · 3 ninja abilities", "icon": "./games/ghost-village/icon.svg", "cover": "./games/ghost-village/cover.webp", "href": "./games/ghost-village/", "featured": false
   },
   {
-    "slug": "world-strike",
-    "name": "World Strike",
-    "description": "Fight through a 3D tactical outpost. Use cover, change weapons and time your EMP to survive escalating enemy waves.",
-    "category": "Shooter",
-    "players": "Solo",
-    "detail": "12 missions · 4 weapons",
-    "icon": "./games/world-strike/icon.svg",
-    "cover": "./games/world-strike/cover.webp",
-    "href": "./games/world-strike/",
-    "featured": false
+    "slug": "iron-citadel", "name": "Iron Citadel", "description": "Enter a 3D industrial fortress. Find keycards, manage ammunition and defeat robot wardens on your way to the core.", "category": "Shooter", "players": "Solo", "detail": "9 missions · 3 difficulties", "icon": "./games/iron-citadel/icon.svg", "cover": "./games/iron-citadel/cover.webp", "href": "./games/iron-citadel/", "featured": false
+  },
+  {
+    "slug": "world-strike", "name": "World Strike", "description": "Fight through a 3D tactical outpost. Use cover, change weapons and time your EMP to survive escalating enemy waves.", "category": "Shooter", "players": "Solo", "detail": "12 missions · 4 weapons", "icon": "./games/world-strike/icon.svg", "cover": "./games/world-strike/cover.webp", "href": "./games/world-strike/", "featured": false
   }
 ]
