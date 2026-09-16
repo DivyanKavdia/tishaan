@@ -1,3 +1,4 @@
+import {decorateCollection} from './player.js';
 const grid = document.getElementById('game-grid');
 const search = document.getElementById('game-search');
 const filtersRoot = document.querySelector('.filters');
@@ -9,6 +10,10 @@ const surprise = document.getElementById('surprise-button');
 const libraryTools = document.getElementById('library-tools');
 let cards = [];
 let category = 'All';
+let favoritesOnly = false;
+const favoritesButton = document.getElementById('favorites-filter');
+favoritesButton.onclick=()=>{favoritesOnly=!favoritesOnly;favoritesButton.setAttribute('aria-pressed',String(favoritesOnly));filterGames();};
+document.addEventListener('favoriteschange',()=>filterGames());
 
 function makeCard(game) {
   const card = document.createElement('article');
@@ -125,7 +130,7 @@ function filterGames(announce = true) {
   for (const card of cards) {
     const matchesCategory = category === 'All' || card.dataset.genre === category;
     const matchesQuery = !query || card.dataset.search.includes(query);
-    card.hidden = !(matchesCategory && matchesQuery);
+    card.hidden = !(matchesCategory && matchesQuery && (!favoritesOnly || card.dataset.favorite === 'true'));
     if (!card.hidden) count++;
   }
   filtersRoot.querySelectorAll('[data-category]').forEach(button => {
@@ -158,6 +163,7 @@ async function loadCatalog() {
   for (const card of cards) card.querySelector('a').addEventListener('click', () => {
     try { localStorage.setItem('tz-last-played', JSON.stringify({slug:card.dataset.slug})); } catch {}
   });
+  decorateCollection(cards);
   rebuildFilters();
   libraryTools.hidden = false;
   surprise.hidden = cards.length === 0;
@@ -175,6 +181,7 @@ search.addEventListener('keydown', event => {
 clearSearch.addEventListener('click', () => {
   search.value = '';
   category = 'All';
+  favoritesOnly=false;favoritesButton.setAttribute('aria-pressed','false');
   filterGames();
   search.focus();
 });

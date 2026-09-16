@@ -1,3 +1,4 @@
+import {visitGame,recordRun} from '../../studio/passport.js';
 import { Game, LEVELS, clamp } from './engine.js';
 import { Renderer } from './scene.js';
 
@@ -42,6 +43,7 @@ function clearInput(){
 function releaseMouse(){if(document.pointerLockElement)document.exitPointerLock();}
 function rememberCheckpoint(){checkpoint={score:game.score,kills:game.kills,shots:game.shots,hits:game.hits,time:game.time,player:{...game.player}};}
 function start(){
+  visitGame('iron-citadel');
   unlockAudio();clearInput();selectedLevel=Number($('sector').value);
   game=new Game(document.querySelector('[name="difficulty"]:checked').value);
   if(selectedLevel>0)game.loadLevel(selectedLevel);
@@ -69,6 +71,7 @@ function showDialog(){
   $('continue').innerHTML=pause?'BACK TO ACTION <span>↗</span>':dead?'TRY AGAIN <span>↗</span>':won?'PLAY AGAIN <span>↗</span>':'NEXT MISSION <span>↗</span>';
   $('restart').hidden=!pause;$('result-stats').hidden=pause;
   const accuracy=game.shots?Math.round(game.hits/game.shots*100):0;
+  if(!pause&&!dead){const grade=game.missionGrade();$('dialog-text').textContent+=` ${'★'.repeat(grade.stars)}${'☆'.repeat(3-grade.stars)} · Intel ${grade.intel}/${grade.totalIntel} · Sector accuracy ${grade.accuracy}%. Three stars: finish above 65 health, collect all intel and reach 60% accuracy.`;}
   $('result-stats').innerHTML=`<div><strong>${game.score}</strong><span>SCORE</span></div><div><strong>${game.kills}</strong><span>SENTRIES</span></div><div><strong>${accuracy}%</strong><span>ACCURACY</span></div>`;
   if(!$('dialog').open)$('dialog').showModal();
 }
@@ -81,6 +84,7 @@ function events(){
     if(event.type==='empty')notify('Out of ammo. Switch to the SHOCK tool or find supplies.');
     if(event.type==='kill'&&event.boss)notify('WARDEN DEFEATED — reach the gold exit!',4000);
     if(event.type==='complete'){
+      const grade=game.missionGrade();recordRun('iron-citadel',{level:game.levelIndex,difficulty:game.difficulty,score:game.score,stars:grade.stars,seconds:grade.seconds});
       best=Math.max(best,game.score);unlocked=Math.max(unlocked,Math.min(LEVELS.length-1,game.levelIndex+1));save();clearInput();releaseMouse();showDialog();
     }
     if(event.type==='dead'){clearInput();releaseMouse();showDialog();}
@@ -89,6 +93,7 @@ function events(){
 }
 function updateHUD(){
   const p=game.player;
+  $('scan').disabled=game.scanCooldown>0;$('scan').textContent=game.scanCooldown>0?`◉ ${Math.ceil(game.scanCooldown)}s`:'◉ SCAN';
   $('health').textContent=Math.ceil(p.hp);$('health-bar').style.width=`${p.hp}%`;$('health').parentElement.classList.toggle('low',p.hp<30);
   $('ammo').innerHTML=game.reloading?'… <small>LOADING</small>':p.weapon===2?'∞ <small>SHOCK</small>':`${p.ammo} <small>/ ${p.reserve}</small>`;
   $('weapon-name').textContent=['01 / SIDEARM','02 / REPEATER','03 / SHOCK'][p.weapon];$('reload').disabled=p.weapon===2||!!game.reloading||p.ammo===12||!p.reserve;
@@ -123,6 +128,7 @@ function loop(now){
 }
 function toggleMap(){expandedMap=!expandedMap;$('map-wrap').classList.toggle('expanded',expandedMap);$('map-button').setAttribute('aria-pressed',String(expandedMap));$('map-button').setAttribute('aria-label',expandedMap?'Shrink map':'Expand map');}
 $('start').addEventListener('click',start);
+$('scan').addEventListener('click',()=>game.scan());
 $('pause').addEventListener('click',pause);
 $('continue').addEventListener('click',()=>{
   if(game.phase==='paused')resume();else if(game.phase==='dead')restart();else if(game.phase==='won')menu();else if(game.phase==='complete'){clearInput();$('dialog').close();game.next();rememberCheckpoint();dirty=true;$('scene').focus({preventScroll:true});notify(game.level.spec.subtitle,3500);}
@@ -142,12 +148,12 @@ $('mouse-aim').addEventListener('click',()=>{
 });
 document.addEventListener('pointerlockchange',()=>{if(!document.pointerLockElement&&game.phase==='playing')pause();});
 document.addEventListener('mousemove',e=>{if(document.pointerLockElement&&game.phase==='playing')input.look+=clamp(e.movementX,-100,100)*.0027;});
-const gameplayKeys=new Set(['KeyW','KeyA','KeyS','KeyD','ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space','KeyE','KeyR','KeyM','Digit1','Digit2','Digit3','KeyQ','ShiftLeft','ShiftRight']);
+const gameplayKeys=new Set(['KeyW','KeyA','KeyS','KeyD','ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space','KeyE','KeyR','KeyM','KeyF','Digit1','Digit2','Digit3','KeyQ','ShiftLeft','ShiftRight']);
 window.addEventListener('keydown',event=>{
   if(event.code==='Escape'&&game.phase==='playing'){event.preventDefault();pause();return;}
   if(game.phase!=='playing'||!gameplayKeys.has(event.code)||event.target.matches('input,select,textarea'))return;
   event.preventDefault();keys.add(event.code);if(event.repeat)return;
-  if(event.code==='KeyE')game.interact();if(event.code==='KeyR')game.reload();if(event.code==='KeyM')toggleMap();if(event.code==='KeyQ')game.cycleWeapon();
+  if(event.code==='KeyF')game.scan();if(event.code==='KeyE')game.interact();if(event.code==='KeyR')game.reload();if(event.code==='KeyM')toggleMap();if(event.code==='KeyQ')game.cycleWeapon();
   if(event.code.startsWith('Digit'))game.switchWeapon(Number(event.code.slice(5))-1);
 });
 window.addEventListener('keyup',event=>keys.delete(event.code));

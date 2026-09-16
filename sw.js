@@ -1,11 +1,13 @@
 const CACHE_PREFIX = 'tishaan-game-zone-';
-const CACHE = 'tishaan-game-zone-4e75114a07e4';
+const CACHE = 'tishaan-game-zone-c49d0cc4c03e';
 const BASE = new URL('./', self.location.href);
 const CORE = [
   './',
   './index.html',
   './assets/hub.css',
   './assets/hub.js',
+  './assets/player.js',
+  './studio/passport.js',
   './assets/controller.svg',
   './games/catalog.json',
   './icon.svg',

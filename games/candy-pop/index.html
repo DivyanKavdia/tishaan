@@ -39,7 +39,7 @@
       <label class="challenge-label">CHALLENGE <select id="challenge" aria-label="Difficulty, starts a fresh board"><option value="relaxed">Relaxed · extra moves</option><option value="classic">Classic</option><option value="expert">Expert · fewer moves</option></select></label><div class="goal-row"><span id="goal">Reach 1,000 points</span><span id="jelly-goal" hidden></span><span class="goal-check" id="goal-check" hidden>✓</span></div>
       <div id="collection-goal" class="collection-goal" hidden></div><div class="board-wrap"><div class="board" id="board" role="group" aria-label="Candy board. Swipe a candy, or select one and an adjacent candy. Use arrow keys to navigate and Space to select."></div><div class="celebration" id="celebration" aria-hidden="true"></div></div>
       <div class="boosters" aria-label="Game tools">
-        <button id="hint" class="tool"><span class="tool-icon" aria-hidden="true">✧</span><span>Hint</span><small>FREE</small></button>
+        <button id="undo" class="tool" disabled><span class="tool-icon" aria-hidden="true">↶</span><span>Undo</span><small id="undo-count">1</small></button><button id="hint" class="tool"><span class="tool-icon" aria-hidden="true">✧</span><span>Hint</span><small>FREE</small></button>
         <button id="hammer" class="tool" aria-pressed="false"><span class="tool-icon hammer-icon" aria-hidden="true">⚒</span><span>Pop one</span><small id="hammer-count">2</small></button>
         <button id="shuffle" class="tool"><span class="tool-icon" aria-hidden="true">⤨</span><span>Shuffle</span><small id="shuffle-count">2</small></button>
       </div>

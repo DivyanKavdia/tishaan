@@ -113,7 +113,7 @@ export class Game {
     this.player.key=false; this.player.hp=Math.max(75,this.player.hp);
     this.player.ammo=12; this.player.reserve=Math.max(48,this.player.reserve);
     this.reloading=0;this.cooldown=0;this.hurt=0;this.flash=0;this.levelKills=0;
-    this.pathTimer=0;this.pathField=null;this.reveal();
+    this.pathTimer=0;this.pathField=null;this.scanCooldown=0;this.scanTime=0;this.levelStartTime=this.time;this.levelStartShots=this.shots;this.levelStartHits=this.hits;this.reveal();
   }
   start(){this.phase='playing';this.emit('start');}
   pause(){if(this.phase==='playing')this.phase='paused';}
@@ -160,6 +160,20 @@ export class Game {
     if(this.level.enemies.some(e=>e.type==='boss'&&e.hp>0)){this.emit('message',{text:'Defeat the Warden to unlock the exit.'});return;}
     this.score+=500;this.phase=this.levelIndex===LEVELS.length-1?'won':'complete';this.emit('complete');
   }
+  scan(){
+    if(this.phase!=='playing'||this.scanCooldown>0)return false;
+    this.scanCooldown=14;this.scanTime=5;
+    const {x,y}=this.player,n=this.level.spec.size;
+    for(let row=0;row<n;row++)for(let col=0;col<n;col++)if(Math.hypot(col+.5-x,row+.5-y)<=9)this.level.seen[row][col]=true;
+    const bots=this.level.enemies.filter(e=>e.hp>0&&distance(e,this.player)<=9).length;
+    const intel=this.level.items.filter(i=>!i.taken&&distance(i,this.player)<=9).length;
+    this.emit('message',{text:`RECON PULSE · ${bots} sentries · ${intel} supplies marked for 5s`});return true;
+  }
+  missionGrade(){
+    const shots=this.shots-this.levelStartShots,hits=this.hits-this.levelStartHits;
+    const intel=this.level.items.filter(i=>i.type==='treasure'),found=intel.filter(i=>i.taken).length;
+    return {stars:1+(this.player.hp>=65?1:0)+(found===intel.length&&(!shots||hits/shots>=.6)?1:0),intel:found,totalIntel:intel.length,accuracy:shots?Math.round(hits/shots*100):100,seconds:this.time-this.levelStartTime};
+  }
   reveal(){
     const {x,y}=this.player,n=this.level.spec.size;
     for(let j=Math.max(0,Math.floor(y)-3);j<Math.min(n,y+4);j++) for(let i=Math.max(0,Math.floor(x)-3);i<Math.min(n,x+4);i++) if(Math.hypot(i+.5-x,j+.5-y)<4)this.level.seen[j][i]=true;
@@ -179,7 +193,7 @@ export class Game {
   }
   update(dt,input={}) {
     if(this.phase!=='playing'||!Number.isFinite(dt)||dt<0)return;
-    dt=clamp(dt,0,.05);this.time+=dt;
+    dt=clamp(dt,0,.05);this.time+=dt;this.scanCooldown=Math.max(0,this.scanCooldown-dt);this.scanTime=Math.max(0,this.scanTime-dt);
     this.cooldown=Math.max(0,this.cooldown-dt);this.flash=Math.max(0,this.flash-dt);this.hurt=Math.max(0,this.hurt-dt);this.hitMarker=Math.max(0,this.hitMarker-dt);
     const p=this.player;
     if(this.reloading>0){this.reloading-=dt;if(this.reloading<=0){const n=Math.min(12-p.ammo,p.reserve);p.ammo+=n;p.reserve-=n;this.reloading=0;this.emit('loaded');}}

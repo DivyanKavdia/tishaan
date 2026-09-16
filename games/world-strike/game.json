@@ -2,8 +2,8 @@
   "name": "World Strike",
   "players": "Solo",
   "icon": "icon.svg",
-  "description": "Fight through a 3D tactical outpost. Use cover, change weapons and time your EMP to survive escalating enemy waves.",
-  "detail": "12 missions · 4 weapons",
+  "description": "Move between cover, time perfect reloads for empowered shots, and evade an armored sentinel’s overdrive volleys.",
+  "detail": "12 missions · 4 weapons · Active reload",
   "category": "Shooter",
   "cover": "cover.webp",
   "featured": false

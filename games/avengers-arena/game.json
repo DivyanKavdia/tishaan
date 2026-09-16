@@ -1,9 +1,9 @@
 {
   "name": "Avengers Arena",
-  "description": "Four heroes. A rooftop tournament. Master combos, choose a combat perk and climb twelve increasingly demanding battles.",
+  "description": "Master perfect parries, counter strikes and confirmed hit chains with four heroes in a twelve-stage rooftop tournament.",
   "category": "Action",
   "players": "Solo vs AI",
-  "detail": "12 stages · 3 combat perks",
+  "detail": "12 stages · Parry & counter combat",
   "icon": "icon.svg",
   "cover": "cover.webp",
   "featured": true

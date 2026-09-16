@@ -1,9 +1,9 @@
 {
   "name": "Chikoo & Bunty: Mischief Chase",
-  "description": "Race through sunlit streets. Jump hurdles, slide under banners and dash for laddoos in a three-lane chase.",
+  "description": "Jump and slide through neighborhood obstacles to build skill chains, multiply laddoo points and race home as either brother.",
   "category": "Action",
   "players": "Solo",
-  "detail": "12 runs · 2 playable brothers",
+  "detail": "12 runs · Skill chains · 2 brothers",
   "icon": "icon.svg",
   "cover": "cover.webp",
   "featured": false

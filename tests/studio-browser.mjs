@@ -20,7 +20,7 @@ for(const [profile,width,height] of [['desktop',1440,960],['phone',390,844],['sm
  const page=await context.newPage();page.setDefaultTimeout(15000);const errors=[];page.on('pageerror',e=>errors.push(e.message));
  try{
   await page.goto(base);await page.waitForFunction(()=>!document.querySelector('#library-tools').hidden);
-  assert.equal(await page.locator('.game-card').count(),9);
+  assert.equal(await page.locator('.game-card').count(),catalog.length);
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'Hub overflow');
   await page.locator('#game-search').fill('tower');assert.equal(await page.locator('.game-card:visible').count(),1);
   await page.locator('#game-search').fill('no such game');assert.ok(await page.locator('#empty-state').isVisible());

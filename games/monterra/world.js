@@ -1,16 +1,8 @@
 import {Batch} from './engine.js';
-export const WORLD_RADIUS=220;
-export const LAKE={x:19,z:0,rx:7.8,rz:6.2};
-export const LAKES=[
-  LAKE,
-  {x:-74,z:58,rx:14,rz:10},
-  {x:88,z:-72,rx:18,rz:12},
-  {x:116,z:92,rx:11,rz:17}
-];
-export const CAMP={x:0,z:8};
+import {WORLD_RADIUS,CAMP,LAKES,lakeDistance,inWater,walkable} from './geography.js';
+export {WORLD_RADIUS,CAMP,LAKES,lakeDistance,walkable};
+export const LAKE=LAKES[0];
 export const GUARDIANS=[{x:-19,z:-18,family:1,level:7,title:'Grove guardian',badge:'Grove sigil'},{x:24,z:-9,family:2,level:10,title:'Tide guardian',badge:'Tide sigil'},{x:7,z:-27,family:0,level:13,title:'Ember guardian',badge:'Ember sigil'},{x:-22,z:8,family:3,level:16,title:'Storm guardian',badge:'Storm sigil'},{x:12,z:22,family:4,level:19,title:'Stone guardian',badge:'Stone sigil'},{x:-4,z:-24,family:1,level:23,title:'Ancient guardian',badge:'Ancient sigil'}];
-export const lakeDistance=(x,z,l=LAKE)=>((x-l.x)/l.rx)**2+((z-l.z)/l.rz)**2;
-function inWater(x,z,padding=1){return LAKES.some(l=>lakeDistance(x,z,l)<padding);}
 export function height(x,z){
   if(inWater(x,z,1))return -.85;
   const broad=Math.sin(x*.035)*Math.cos(z*.031)*1.15;
@@ -20,7 +12,6 @@ export function height(x,z){
   const edge=Math.max(0,Math.hypot(x,z)-(WORLD_RADIUS-18))*.055;
   return .14+broad+ridges+highlands+north-edge;
 }
-export function walkable(x,z){return Math.hypot(x,z)<WORLD_RADIUS&& !inWater(x,z,1.04);}
 export function zone(x,z){
   if(Math.hypot(x,z)<34)return x>12?'Crystal coast':z<-20?'Ember highlands':x<-10?'Whisperwood':'Sunpetal meadow';
   if(z<-105)return 'Ashen frontier';

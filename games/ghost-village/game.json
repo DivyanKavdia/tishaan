@@ -1,9 +1,9 @@
 {
   "name": "Ghost Village",
-  "description": "Defend the moonlit shrine with a team of three ninjas. Switch leaders, combine abilities and face spectral bosses.",
+  "description": "Switch three ninja guardians, shatter frozen spirits, chain team attacks and evade a spectral guardian’s marked strikes.",
   "category": "Action",
   "players": "Solo",
-  "detail": "12 missions · 3 ninja abilities",
+  "detail": "12 missions · Team combos · Boss phases",
   "icon": "icon.svg",
   "cover": "cover.webp",
   "featured": false

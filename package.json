@@ -1,6 +1,6 @@
 {
   "name": "tishaan-game-zone",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "private": true,
   "type": "module",
   "description": "A mobile-friendly arcade with independent browser games.",
@@ -14,6 +14,7 @@
     "test:hub": "node tests/hub-browser.mjs",
     "test:candy": "node tests/candy-browser.mjs",
     "test:citadel": "node tests/citadel-browser.mjs",
-    "test:studio": "node tests/studio-browser.mjs"
+    "test:studio": "node tests/studio-browser.mjs",
+    "test:features": "node tests/features-browser.mjs"
   }
 }

@@ -1,0 +1,6 @@
+{
+  "name": "Pride Lands",
+  "description": "Guard your pride in a 3D savanna. Track prey, heal your pride, stun rival packs and dodge an alpha’s marked pounce.",
+  "category": "Adventure", "players": "Solo", "detail": "12 territories · 3 lions · Pride defense",
+  "icon": "icon.svg", "cover": "cover.svg", "featured": false
+}

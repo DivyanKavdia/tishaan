@@ -28,7 +28,7 @@ const workerPath = path.join(projectRoot, 'sw.js');
 const worker = await readFile(workerPath, 'utf8');
 const fingerprint = createHash('sha256');
 fingerprint.update(worker.replace(/^const CACHE = .*;$/m, ''));
-const hubFiles = ['index.html', 'games/catalog.json', 'icon.svg', 'icon-192.png', 'icon-512.png', 'manifest.webmanifest', ...(await readdir(path.join(projectRoot, 'assets'))).sort().map(file => `assets/${file}`), ...games.flatMap(game => [game.icon, game.cover])];
+const hubFiles = ['index.html', 'games/catalog.json', 'studio/passport.js', 'icon.svg', 'icon-192.png', 'icon-512.png', 'manifest.webmanifest', ...(await readdir(path.join(projectRoot, 'assets'))).sort().map(file => `assets/${file}`), ...games.flatMap(game => [game.icon, game.cover])];
 for (const file of hubFiles) { fingerprint.update(file); fingerprint.update(await readFile(path.join(projectRoot, file))); }
 const version = fingerprint.digest('hex').slice(0, 12);
 await writeFile(workerPath, worker.replace(/^const CACHE = .*;$/m, `const CACHE = 'tishaan-game-zone-${version}';`));

@@ -1,4 +1,5 @@
-import { CandyGame, COLORS, LEVELS, SIZE, adjacent, availableMoves } from './engine.js';
+import {visitGame,recordRun} from '../../studio/passport.js';
+import { CandyGame, COLORS, LEVELS, SIZE, adjacent, availableMoves, recommendMove } from './engine.js';
 
 const $ = id => document.getElementById(id);
 const STORAGE = 'tishaan-candy-pop-v1';
@@ -99,6 +100,7 @@ function renderStats(score = game.score, jelly = game.jelly) {
   const stars = [1, 1.35, 1.8].filter(r => score >= game.rules.target * r).length;
   [...$('stars').children].forEach((el, i) => el.classList.toggle('earned', i < stars));
   $('stars').setAttribute('aria-label', `${stars} of 3 stars`);
+  $('undo').disabled=busy||!game.rewinds||!game.history||game.status==='won';$('undo-count').textContent=game.rewinds;
   $('hammer-count').textContent = game.boosters.hammer;
   $('shuffle-count').textContent = game.boosters.shuffle;
   $('hammer').setAttribute('aria-pressed', String(hammer));
@@ -123,6 +125,7 @@ async function swapArt(a, b, invalid = false) {
 }
 function recordResult() {
   if (game.status === 'won') {
+    recordRun('candy-pop',{level:game.level,difficulty:game.difficulty,score:game.score,stars:game.stars});
     progress.unlocked = Math.max(progress.unlocked, Math.min(LEVELS.length - 1, game.level + 1));
     progress.stars[game.level] = Math.max(progress.stars[game.level] || 0, game.stars);
     progress.best[game.level] = Math.max(progress.best[game.level] || 0, game.score);
@@ -184,11 +187,10 @@ function choose(index) {
 function showHint(explicit = true) {
   if (!canPlay()) return;
   clearHint();
-  const moves = availableMoves(game.board);
-  if (!moves.length) return;
-  const hint = moves.find(([a, b]) => game.board[a].special || game.board[b].special) || moves[0];
-  hint.forEach(i => $('board').children[i].classList.add('hint'));
-  if (explicit) message('Swap the two sparkling candies. Hints are always free.');
+  const hint = recommendMove(game);
+  if(!hint)return;
+  hint.cells.forEach(i => $('board').children[i].classList.add('hint'));
+  if (explicit) message(hint.reason+' Swap the sparkling candies.');
 }
 
 $('board').addEventListener('pointerdown', event => {
@@ -231,6 +233,8 @@ $('hammer').addEventListener('click', () => {
   hammer = !hammer; selected = null; clearHint(); renderBoard(); renderStats();
   message(hammer ? 'Tap any candy to pop it. Tap Pop one again to cancel.' : 'Swipe a candy to make your next match.');
 });
+function undoMove(){if(busy||!game.undo())return;if($('modal').open)$('modal').close();started=true;selected=null;hammer=false;renderBoard();renderStats();save();message('Last swap restored. Your one rewind for this board is used.');planHint();}
+$('undo').addEventListener('click',()=>{if(canPlay())undoMove();});
 $('shuffle').addEventListener('click', () => { if (canPlay()) void animate(game.boost('shuffle')); });
 $('sound').addEventListener('click', () => { progress.sound = !progress.sound; renderStats(); save(); if (progress.sound) sound('swap'); });
 
@@ -251,6 +255,7 @@ $('modal-secondary').addEventListener('click', () => secondaryAction());
 $('modal-close').addEventListener('click', closeModal);
 $('modal').addEventListener('cancel', event => { event.preventDefault(); closeModal(); });
 function startLevel(level) {
+  visitGame('candy-pop');
   game = new CandyGame(level,Math.random,progress.difficulty); selected = null; hammer = false; focusIndex = 0; started = true;
   $('celebration').innerHTML = ''; renderBoard(); renderStats(); save();
   if ($('modal').open) $('modal').close();
@@ -272,7 +277,7 @@ $('restart').addEventListener('click', () => {
   modal({ title: 'A fresh start?', art: '↻', content: '<p>Restart this level with a new board, all your moves, and two of each booster.</p>', primary: 'Restart level', action: () => startLevel(game.level), secondary: closeModal, secondaryLabel: 'Keep playing' });
 });
 $('help').addEventListener('click', () => modal({ title: 'Small swaps. Big magic.', kicker: 'HOW TO PLAY',
-  content: '<div class="tutorial"><div><b>Swipe</b> a candy into its neighbor, or tap two neighbors. Match <b>3 of the same kind</b>.</div><div><b>4 in a line</b> makes a striped candy. <b>L or T</b> makes a wrapped candy. <b>5 in a line</b> makes a rainbow bomb.</div><div>Match a special candy to activate it. Swap a <b>rainbow</b> with any color, or combine <b>two specials</b>!</div><div>Reach the score target before moves run out. When you see <b>pink jelly</b>, match on every jelly tile too.</div><div>Recipe levels also ask you to collect a specific candy color. The goal is shown above the board.</div><div><b>Hint</b> is free. <b>Pop one</b> and <b>Shuffle</b> never cost a move. You get two of each per level.</div><div>Keyboard: arrows to move focus, Space or Enter to select. Hold Shift + an arrow to swap.</div></div>', primary: 'Got it!', onClose: () => { started = true; } }));
+  content: '<div class="tutorial"><div><b>Swipe</b> a candy into its neighbor, or tap two neighbors. Match <b>3 of the same kind</b>.</div><div><b>4 in a line</b> makes a striped candy. <b>L or T</b> makes a wrapped candy. <b>5 in a line</b> makes a rainbow bomb.</div><div>Match a special candy to activate it. Swap a <b>rainbow</b> with any color, or combine <b>two specials</b>!</div><div>Reach the score target before moves run out. When you see <b>pink jelly</b>, match on every jelly tile too.</div><div>Recipe levels also ask you to collect a specific candy color. The goal is shown above the board.</div><div><b>Hint</b> prioritizes jelly, recipes and special candies. <b>Undo</b> restores one swap per board, even after the final move. Using a booster clears the undo history. <b>Hint</b> is free. <b>Pop one</b> and <b>Shuffle</b> never cost a move. You get two of each per level.</div><div>Keyboard: arrows to move focus, Space or Enter to select. Hold Shift + an arrow to swap.</div></div>', primary: 'Got it!', onClose: () => { started = true; } }));
 function showResult() {
   const won = game.status === 'won';
   if (won) sound('win');
@@ -280,7 +285,7 @@ function showResult() {
   modal({ title: won ? last ? 'You’re a candy champion!' : 'Oh, so sweet!' : 'One more sweet try?', kicker: won ? `LEVEL ${game.level + 1} COMPLETE` : 'OUT OF MOVES', art: won ? '★' : '♡',
     content: `${won ? `<div class="result-stars" aria-label="${game.stars} stars">${'★'.repeat(game.stars)}${'☆'.repeat(3 - game.stars)}</div>` : ''}<p>${won ? last ? 'You made it through all 36 levels! Replay your favorites to collect more stars.' : 'A delicious win. The next stop on your candy trail is ready!' : 'A new board could be your lucky one. There’s no waiting to play again.'}</p><div class="target-card"><span><b>${game.score.toLocaleString('en')}</b><br>points</span><span><b>${won ? game.moves : game.jellyLeft || '—'}</b><br>${won ? 'moves left' : 'jelly left'}</span></div>`,
     primary: won && !last ? `Play level ${game.level + 2} →` : won ? 'Explore the level map' : 'Try again →',
-    action: () => won && last ? showMap() : startLevel(won ? game.level + 1 : game.level), secondary: showMap,
+    action: () => won && last ? showMap() : startLevel(won ? game.level + 1 : game.level), secondary: !won&&game.rewinds&&game.history?undoMove:showMap, secondaryLabel:!won&&game.rewinds&&game.history?'Undo last move':'Level map',
     onClose: () => { message('Use the level menu or restart to play again.'); } });
 }
 document.addEventListener('visibilitychange', () => { if (document.hidden) { clearHint(); save(); audioContext?.suspend().catch(() => {}); } else planHint(); });
@@ -288,6 +293,6 @@ window.addEventListener('pagehide', save);
 renderBoard(); renderStats();
 modal({ title: restored ? 'Welcome back, sweet tooth.' : 'Hello, sweet tooth.', kicker: restored ? 'YOUR SWEET ADVENTURE CONTINUES' : 'LET’S MAKE SOME MAGIC',
   content: `<p>${restored ? 'Your candy board is right where you left it.' : 'Swap colorful candies, make magical matches, and follow a trail of 36 sweet puzzles.'}</p><div class="target-card"><span><b>Level ${game.level + 1}</b><br>${game.rules.name}</span><span><b>${game.rules.target.toLocaleString('en')}</b><br>point target</span></div><p>Swipe to match <b>3 of the same kind</b>.</p>`,
-  primary: restored ? 'Keep playing →' : 'Let’s play →', onClose: () => { started = true; save(); } });
+  primary: restored ? 'Keep playing →' : 'Let’s play →', onClose: () => {visitGame('candy-pop');started = true; save(); } });
 
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js', { scope: './' }).catch(() => {});

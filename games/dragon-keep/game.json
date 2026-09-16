@@ -1,9 +1,9 @@
 {
   "name": "Dragon Keep TD",
-  "description": "Protect the Dragon Crystal. Place, upgrade and combine three tower types across four winding battlefields.",
+  "description": "Scout incoming waves, select tower targets and unlock armor-piercing arrows, freezing frost and siege blasts.",
   "category": "Strategy",
   "players": "Solo",
-  "detail": "12 missions · 3 tower types",
+  "detail": "12 missions · Target priorities",
   "icon": "icon.svg",
   "cover": "cover.webp",
   "featured": false

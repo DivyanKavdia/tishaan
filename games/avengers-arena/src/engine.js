@@ -15,7 +15,7 @@ const clamp = (n, lo, hi) => Math.max(lo, Math.min(hi, n));
 
 function fighter(hero, id, x, facing) {
   const spec = HEROES[hero];
-  return { id, hero, x, y: 0, vy: 0, facing, hp: spec.health, maxHp: spec.health, energy: 100, guard: false, moving: 0, attack: null, cooldown: 0, stun: 0, invulnerable: 0, flash: 0, combo: 0, comboWindow: 0, specialBuffer: 0, strikeBuffer: 0, jumpBuffer: 0, damageDealt: 0, hits: 0 };
+  return { id, hero, x, y: 0, vy: 0, facing, hp: spec.health, maxHp: spec.health, energy: 100, guard: false, moving: 0, attack: null, cooldown: 0, stun: 0, invulnerable: 0, flash: 0, combo: 0, comboWindow: 0, specialBuffer: 0, strikeBuffer: 0, jumpBuffer: 0, damageDealt: 0, hits: 0, parries: 0, parryWindow: 0, parryCooldown: 0, guardHeld: false, counterWindow: 0, hitWindow: 0, hitChain: 0, bestChain: 0 };
 }
 
 export function createMatch({ hero = 'ironman', opponent = 'thor', difficulty = 'hero', width = 1120, height = 560, random = Math.random } = {}) {
@@ -30,12 +30,21 @@ function effect(match, kind, x, y, color, life = 0.45, extra = {}) {
 function damage(match, attacker, target, amount, direction, isSpecial = false) {
   if (target.hp <= 0 || target.invulnerable > 0) return false;
   const blocking = target.guard && target.energy >= 6 && target.facing === -direction;
+  if (blocking && target.id === 'player' && target.parryWindow > 0) {
+    target.parryWindow=0; target.parries++; target.energy=Math.min(100,target.energy+12); target.counterWindow=.95;
+    attacker.stun=.42; attacker.attack=null;
+    effect(match,'block',target.x,match.floor-target.y-67,'#ffe5a0');
+    effect(match,'number',target.x,match.floor-target.y-150,'#ffe5a0',.8,{text:'PERFECT PARRY'});
+    match.events.push({type:'parry'}); return true;
+  }
   let actual = amount * (attacker.id === 'enemy' ? DIFFICULTIES[match.difficulty].damage * (match.enemyDamage || 1) : match.perk === 'power' ? 1.12 : 1);
+  if(!blocking&&attacker.counterWindow>0&&!isSpecial){actual*=1.5;attacker.counterWindow=0;match.events.push({type:'counter'});}
   if (blocking) {
     actual *= target.id === 'player' && match.perk === 'guard' ? .10 : .18;
     target.energy = Math.max(0, target.energy - (isSpecial ? 18 : 9));
     target.stun = 0.035;
   } else {
+    target.hitChain=0;target.hitWindow=0;
     target.stun = isSpecial ? 0.22 : 0.14;
     target.attack = null;
     target.invulnerable = 0.19;
@@ -46,6 +55,7 @@ function damage(match, attacker, target, amount, direction, isSpecial = false) {
   target.hp = Math.max(0, target.hp - dealt);
   attacker.damageDealt += dealt;
   attacker.hits += 1;
+  if(!blocking){attacker.hitChain=attacker.hitWindow>0?attacker.hitChain+1:1;attacker.hitWindow=1.4;attacker.bestChain=Math.max(attacker.bestChain,attacker.hitChain);}
   attacker.energy = Math.min(100, attacker.energy + (isSpecial ? 0 : 4));
   match.shake = blocking ? 2 : isSpecial ? 8 : 4;
   effect(match, blocking ? 'block' : 'hit', target.x, match.floor - target.y - 67, blocking ? '#b8dbff' : HEROES[attacker.hero].light);
@@ -114,13 +124,15 @@ function chooseAI(match) {
 
 function updateFighter(match, actor, target, input, dt) {
   const spec = HEROES[actor.hero];
-  for (const key of ['cooldown', 'stun', 'invulnerable', 'flash', 'comboWindow', 'specialBuffer', 'strikeBuffer', 'jumpBuffer']) actor[key] = Math.max(0, actor[key] - dt);
+  for (const key of ['cooldown', 'stun', 'invulnerable', 'flash', 'comboWindow', 'specialBuffer', 'strikeBuffer', 'jumpBuffer', 'parryWindow', 'parryCooldown', 'counterWindow', 'hitWindow']) actor[key] = Math.max(0, actor[key] - dt);
   // Brief taps during an attack are queued so phone controls feel responsive.
   if (input.special) actor.specialBuffer = 0.4;
   if (input.attack) actor.strikeBuffer = 0.18;
   if (input.jump) actor.jumpBuffer = 0.16;
   actor.facing = target.x >= actor.x ? 1 : -1;
   actor.guard = !!input.guard && actor.y < 1 && actor.stun <= 0 && !actor.attack && actor.energy >= 6;
+  if(actor.guard&&!actor.guardHeld&&actor.parryCooldown<=0){actor.parryWindow=.18;actor.parryCooldown=.65;}
+  actor.guardHeld=!!input.guard;
   actor.energy = Math.min(100, actor.energy + dt * (actor.guard ? 2.5 : 9) * (actor.id === 'player' && match.perk === 'energy' ? 1.3 : actor.id === 'enemy' && match.campaignLevel >= 4 ? 1.15 : 1));
   if (actor.stun <= 0) {
     const move = Number(!!input.right) - Number(!!input.left);

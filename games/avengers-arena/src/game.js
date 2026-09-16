@@ -1,3 +1,4 @@
+import {visitGame,recordRun} from '../../../studio/passport.js';
 import { HEROES, createMatch, stepMatch } from './engine.js';
 import { drawHero, drawMatch } from './art.js';
 import {ArenaScene} from './scene.js';
@@ -70,6 +71,7 @@ function tone(start, end, duration, wave = 'sine', volume = 0.07, delay = 0) {
 
 function playEvents(events) {
   for (const event of events) {
+    if(event.type==='parry'||event.type==='counter'){$('combat-callout').textContent=event.type==='parry'?'PERFECT PARRY · COUNTER NOW':'COUNTER STRIKE · 1.5× DAMAGE';$('combat-callout').classList.add('show');clearTimeout(window.arenaCalloutTimer);window.arenaCalloutTimer=setTimeout(()=>$('combat-callout').classList.remove('show'),1100);tone(720,440,.13,'triangle');}
     if (event.type === 'hit') tone(event.special ? 120 : 180, 35, 0.13, 'triangle', 0.13);
     else if (event.type === 'block') tone(600, 160, 0.075, 'triangle', 0.04);
     else if (event.type === 'swing') tone(210, 70, 0.08, 'triangle', 0.025);
@@ -169,7 +171,7 @@ function resizeArena() {
 }
 
 function startGame(rematch = false) {
-  initAudio(); clearInput();
+  visitGame('avengers-arena');initAudio(); clearInput();
   const old = match;
   let opponent = $('opponent').value;
   if (rematch && old) opponent = old.enemy.hero;
@@ -194,7 +196,7 @@ function startGame(rematch = false) {
   paused = false; lastFrame = 0; lastAnnouncement = '';
   $('player-name').textContent = HEROES[selectedHero].name.toUpperCase();
   $('enemy-name').textContent = HEROES[opponent].name.toUpperCase();
-  $('move-tip').textContent = tips[selectedHero];
+  $('move-tip').textContent = 'Tap GUARD just before impact to parry, then STRIKE to counter.';
   $('player-health').setAttribute('aria-valuemax', HEROES[selectedHero].health);
   $('enemy-health').setAttribute('aria-valuemax', HEROES[opponent].health);
   $('live-status').textContent = `${HEROES[selectedHero].name} versus ${HEROES[opponent].name}. Get ready.`;
@@ -276,6 +278,8 @@ function showResult() {
   $('result-description').textContent = draw ? 'Even heroes meet their match. Go again?' : victory ? `${HEROES[match.player.hero].name} owns the rooftop. Nicely done.` : `${HEROES[match.enemy.hero].name} takes this round. Your comeback starts here.`;
   if(victory&&match.campaignLevel!==null){const stars=match.player.hp/match.player.maxHp>=.7?3:match.player.hp/match.player.maxHp>=.35?2:1;completeLevel(tournament,match.campaignLevel,stars,match.player.hits*100,12);saveProgress('avengers-arena',tournament);updateTournament();$('result-description').textContent=`Stage ${match.campaignLevel+1} cleared. ${'★'.repeat(stars)}${'☆'.repeat(3-stars)} · ${stageNames[match.campaignLevel]}`;}
   $('rematch-button').innerHTML=victory&&match.campaignLevel!==null&&match.campaignLevel<11?'NEXT STAGE <span>↗</span>':'REMATCH <span>↗</span>';
+  if(victory)recordRun('avengers-arena',{level:match.campaignLevel===null?'quick-'+selectedHero:match.campaignLevel,difficulty:match.difficulty,score:Math.round(match.player.damageDealt*10)+match.player.parries*100,stars:match.player.hp/match.player.maxHp>=.7?3:match.player.hp/match.player.maxHp>=.35?2:1,seconds:75-match.timeLeft});
+  $('result-skill').textContent=`${match.player.parries} perfect parries · best chain ${match.player.bestChain} hits`;
   $('result-hits').textContent = match.player.hits;
   $('result-time').textContent = `${Math.round(75 - match.timeLeft)}s`;
   $('result-overlay').hidden = false;

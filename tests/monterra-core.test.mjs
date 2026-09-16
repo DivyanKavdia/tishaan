@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {FAMILIES,member,freshState,normalize,nameOf,maxHp,xpNeeded,canEvolve,gainXp,evolve,damage,captureChance,healthyIndex,effectiveness} from '../games/monterra/core.js';
-import {walkable,height,GUARDIANS} from '../games/monterra/world.js';
+import {walkable,height,GUARDIANS,WORLD_RADIUS} from '../games/monterra/world.js';
 
 test('five distinct families provide fifteen uniquely named forms',()=>{
  assert.equal(FAMILIES.length,5);assert.equal(new Set(FAMILIES.flatMap(f=>f.names)).size,15);
@@ -22,10 +22,10 @@ test('capture chances increase as target health falls',()=>{const m=member(2,8);
 test('evolved wild creatures are more difficult to catch',()=>assert.ok(captureChance(member(0,8,1))<captureChance(member(0,8,0))));
 test('missing or invalid save files are rejected safely',()=>{for(const value of [null,{},0,'bad',{team:[]},{team:[{family:99}]}])assert.equal(normalize(value),null);});
 test('mixed corrupt members do not invalidate healthy members',()=>{const s=normalize({team:[null,{},member(2)]});assert.equal(s.team.length,1);assert.equal(s.team[0].family,2);});
-test('save normalization bounds all resource and state fields',()=>{const s=normalize({team:[{family:1,level:1e8,stage:9,xp:1e8,hp:-10}],active:100,orbs:-1,potions:Infinity,position:{x:Infinity,z:-Infinity},badges:[0,0,1,19,'2']});assert.equal(s.team[0].level,50);assert.equal(s.team[0].stage,2);assert.equal(s.team[0].hp,0);assert.equal(s.active,0);assert.equal(s.orbs,0);assert.equal(s.potions,9999);assert.deepEqual(s.badges,[0,1]);assert.equal(s.position.x,31);});
+test('save normalization bounds all resource and state fields',()=>{const s=normalize({team:[{family:1,level:1e8,stage:9,xp:1e8,hp:-10}],active:100,orbs:-1,potions:Infinity,position:{x:Infinity,z:-Infinity},badges:[0,0,1,19,'2']});assert.equal(s.team[0].level,50);assert.equal(s.team[0].stage,2);assert.equal(s.team[0].hp,0);assert.equal(s.active,0);assert.equal(s.orbs,0);assert.equal(s.potions,9999);assert.deepEqual(s.badges,[0,1]);assert.deepEqual(s.position,{x:0,z:8});});
 test('version-two saves migrate without deleting creatures',()=>{const s=normalize({team:[{family:3,stage:1,level:9,xp:22}],position:{x:8,y:8},orbs:7,wins:4,catches:2});assert.equal(nameOf(s.team[0]),'Stormcat');assert.equal(s.team[0].hp,maxHp(s.team[0]));assert.equal(s.orbs,7);assert.equal(s.position.z,8);});
 test('save serialization and rehydration preserve progression',()=>{const s=freshState();s.team.push(member(3,12,2));s.active=1;s.badges=[0,1];s.catches=2;s.orbs=19;assert.deepEqual(normalize(JSON.parse(JSON.stringify(s))),s);});
 test('team save has a bounded size',()=>assert.equal(normalize({team:Array.from({length:100},()=>member())}).team.length,60));
 test('healthy companion lookup excludes fainted members',()=>{const s=freshState();s.team[0].hp=0;assert.equal(healthyIndex(s),-1);s.team.push(member(1));assert.equal(healthyIndex(s),1);});
 test('camp and all guardian gates are walkable',()=>{assert.ok(walkable(0,8));for(const g of GUARDIANS)assert.ok(walkable(g.x,g.z));});
-test('lake and distant ocean cannot be entered',()=>{assert.equal(walkable(19,0),false);assert.equal(walkable(50,50),false);assert.ok(height(19,0)<0);});
+test('lake and distant ocean cannot be entered',()=>{assert.equal(walkable(19,0),false);assert.equal(walkable(WORLD_RADIUS+10,0),false);assert.ok(height(19,0)<0);});

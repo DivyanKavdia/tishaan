@@ -1,9 +1,9 @@
 {
   "name": "Iron Citadel",
-  "description": "Enter a 3D industrial fortress. Find keycards, manage ammunition and defeat robot wardens on your way to the core.",
+  "description": "Breach a 3D fortress with a recon scanner. Find intel, manage ammunition and earn mission stars for precise, careful play.",
   "category": "Shooter",
   "players": "Solo",
-  "detail": "9 missions · 3 difficulties",
+  "detail": "9 sectors · Recon scan · Mission grades",
   "icon": "icon.svg",
   "cover": "cover.webp",
   "featured": false

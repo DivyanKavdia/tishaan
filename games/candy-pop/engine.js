@@ -58,6 +58,7 @@ export class CandyGame {
     this.moves = this.rules.moves;
     this.boosters = { hammer: 2, shuffle: 2 };
     this.status = 'playing';
+    this.rewinds = 1;this.history = null;
     this.jelly = Array(64).fill(0);
     const positions = Array.from({ length: 64 }, (_, i) => i);
     this.mix(positions);
@@ -89,8 +90,8 @@ export class CandyGame {
     [board[0].color, board[1].color, board[2].color, board[9].color] = [0, 1, 0, 0];
     return board;
   }
-  snapshot() {
-    return clone({ version: 1, difficulty:this.difficulty, collected:[...this.collected], level: this.level, score: this.score, moves: this.moves, boosters: this.boosters, status: this.status, board: this.board, jelly: this.jelly });
+  snapshot(includeHistory = true) {
+    return clone({ version: 1, rewinds:this.rewinds, history:includeHistory?this.history:null, difficulty:this.difficulty, collected:[...this.collected], level: this.level, score: this.score, moves: this.moves, boosters: this.boosters, status: this.status, board: this.board, jelly: this.jelly });
   }
   static restore(data, random = Math.random) {
     if (!data || data.version !== 1 || !Number.isInteger(data.level) || !LEVELS[data.level] || data.status !== 'playing') return null;
@@ -104,6 +105,8 @@ export class CandyGame {
     if(data.collected!==undefined&&(!Array.isArray(data.collected)||data.collected.length!==6||!data.collected.every(n=>Number.isInteger(n)&&n>=0&&n<=100000)))return null;
     const game = preview;
     Object.assign(game, clone(data));
+    game.rewinds=data.rewinds===0?0:1;game.history=null;
+    if(game.rewinds&&data.history&&data.history.level===data.level&&data.history.difficulty===difficulty&&data.history.moves===data.moves+1){const previous=CandyGame.restore({...data.history,history:null},random);if(previous)game.history=previous.snapshot(false);}
     game.difficulty=difficulty;game.collected=data.collected?[...data.collected]:Array(6).fill(0);
     return game;
   }
@@ -191,6 +194,7 @@ export class CandyGame {
 
   play(a, b) {
     if (this.status !== 'playing' || !validSwap(this.board, a, b)) return { accepted: false, frames: [] };
+    this.history=this.rewinds?this.snapshot(false):null;
     swap(this.board, a, b);
     this.moves--;
     const frames = [{ type: 'swap', board: clone(this.board), jelly: [...this.jelly], cells: [a, b] }];
@@ -227,13 +231,35 @@ export class CandyGame {
     frames.push({ type: 'shuffle', board: clone(this.board), jelly: [...this.jelly] });
     return frames;
   }
+  undo() {
+    if(!this.rewinds||!this.history||this.status==='won')return false;
+    const restored=CandyGame.restore({...this.history,history:null},this.random);
+    if(!restored)return false;
+    Object.assign(this,restored);this.rewinds=0;this.history=null;return true;
+  }
   boost(kind, index) {
     if (this.status !== 'playing' || !this.boosters[kind] || !['hammer', 'shuffle'].includes(kind)) return { accepted: false, frames: [] };
     if (kind === 'hammer' && (!Number.isInteger(index) || index < 0 || index >= 64)) return { accepted: false, frames: [] };
+    this.history=null;
     this.boosters[kind]--;
     const frames = [];
     if (kind === 'shuffle') this.reshuffle(frames);
     else this.clear([index], [], 1, frames, 'Pop!');
     return this.settle(frames);
   }
+}
+
+// Rank the guaranteed first clear, not speculative cascades or random future candy.
+export function recommendMove(game) {
+  let best=null;
+  for(const [a,b] of availableMoves(game.board)){
+    let seed=12345;const preview=Object.create(CandyGame.prototype);
+    Object.assign(preview,game.snapshot(false),{rules:{...game.rules},random:()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;},rewinds:0});
+    const result=preview.play(a,b),frame=result.frames.find(f=>f.type==='clear');if(!frame)continue;
+    const jelly=frame.cells.filter(i=>game.jelly[i]>0).length;
+    const recipe=game.collectionLeft?frame.cells.filter(i=>frame.board[i]?.color===game.rules.collectColor).length:0;
+    const specials=frame.creations.length,weight=jelly*80+Math.min(recipe,game.collectionLeft)*65+specials*120+frame.cells.length*10;
+    if(!best||weight>best.weight)best={cells:[a,b],weight,reason:specials?'Create a special candy for a stronger next move.':jelly?'Clear jelly while building your score.':recipe?'Collect the color needed for your recipe.':'Make a strong opening match.'};
+  }
+  return best;
 }

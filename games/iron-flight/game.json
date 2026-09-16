@@ -1,9 +1,9 @@
 {
   "name": "Iron Flight",
-  "description": "Take flight above the city. Weave through rings, fight drones and face skyborne bosses with your chosen suit module.",
+  "description": "Thread perfect ring centers, build flight chains and dodge the sky commander’s second-phase spread volleys.",
   "category": "Action",
   "players": "Solo",
-  "detail": "12 flights · 3 suit modules",
+  "detail": "12 flights · Precision rings · Boss phases",
   "icon": "icon.svg",
   "cover": "cover.webp",
   "featured": true

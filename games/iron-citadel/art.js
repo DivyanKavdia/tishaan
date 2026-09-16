@@ -149,6 +149,7 @@ export class Renderer {
       const t=game.level.grid[y][x];c.fillStyle=t===5?'#f3c775':t===4?'#81aaa1':t?'#64716c':'#263942';c.fillRect(x*unit,y*unit,Math.ceil(unit)-.5,Math.ceil(unit)-.5);
     }
     for(const e of game.level.items)if(!e.taken&&e.type==='key'&&game.level.seen[Math.floor(e.y)][Math.floor(e.x)]){c.fillStyle='#ffe19d';c.fillRect(e.x*unit-2,e.y*unit-2,4,4);}
+    if(game.scanTime>0){for(const e of game.level.enemies)if(e.hp>0&&Math.hypot(e.x-game.player.x,e.y-game.player.y)<=9){c.fillStyle=e.type==='boss'?'#ff9b73':'#eecb8a';c.beginPath();c.arc(e.x*unit,e.y*unit,e.type==='boss'?3:2,0,Math.PI*2);c.fill();}for(const i of game.level.items)if(!i.taken&&Math.hypot(i.x-game.player.x,i.y-game.player.y)<=9){c.fillStyle=i.type==='treasure'?'#e5bb77':'#a4e5ce';c.fillRect(i.x*unit-2,i.y*unit-2,4,4);}}
     const p=game.player;c.save();c.translate(p.x*unit,p.y*unit);c.rotate(p.a);c.fillStyle='#f5dfb3';c.beginPath();c.moveTo(5,0);c.lineTo(-3,-3);c.lineTo(-2,0);c.lineTo(-3,3);c.closePath();c.fill();c.restore();
   }
 }

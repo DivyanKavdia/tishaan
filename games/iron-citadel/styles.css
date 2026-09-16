@@ -13,3 +13,5 @@ dialog{width:min(430px,calc(100% - 28px));max-height:calc(100dvh - 30px);padding
 
 /* Cinematic edition. */
 .scanlines{display:none}#scene{image-rendering:auto!important}.menu{background:linear-gradient(90deg,#0b1924f7 0%,#0c1b28de 35%,#122b3930 100%),url(./cover.webp) center/cover!important}.setup fieldset{flex-wrap:wrap}.setup fieldset label{flex:1;min-width:110px}.menu h1{letter-spacing:-4px}.game-frame{box-shadow:0 30px 100px #0005}@media(max-width:600px){.menu{background:linear-gradient(0deg,#0b1924f5 25%,#0b1924a0 65%,#10242e77),url(./cover.webp) 62% center/cover!important}}
+
+@media(max-width:420px){.game-actions{gap:4px}.game-actions button{min-width:40px;padding:8px 7px;font-size:10px}}

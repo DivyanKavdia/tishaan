@@ -1,9 +1,9 @@
 {
   "name": "Candy Pop",
-  "description": "Glossy candies, layered crystal jelly and colourful recipes. Make clever combos across six delicious worlds.",
+  "description": "Solve jelly and recipe puzzles with special-candy combinations, goal-aware hints and a one-use rewind for each board.",
   "category": "Puzzle",
   "players": "Solo",
-  "detail": "36 levels · 3 challenges",
+  "detail": "36 levels · Smart hints · Undo",
   "icon": "icon.svg",
   "cover": "cover.webp",
   "featured": false
