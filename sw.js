@@ -1,5 +1,5 @@
 const CACHE_PREFIX = 'tishaan-game-zone-';
-const CACHE = 'tishaan-game-zone-monterra-3d-3.0.0';
+const CACHE = 'tishaan-game-zone-4e75114a07e4';
 const BASE = new URL('./', self.location.href);
 const CORE = [
   './',
@@ -9,7 +9,8 @@ const CORE = [
   './assets/controller.svg',
   './games/catalog.json',
   './icon.svg',
-  './manifest.webmanifest'
+  './manifest.webmanifest',
+  './games/monterra/cover.webp'
 ];
 
 self.addEventListener('install', event => {
@@ -35,14 +36,14 @@ async function networkFirst(request) {
     if (response.ok) await cache.put(request, response.clone());
     return response;
   } catch {
-    const cached = await cache.match(request);
+    const cached = await cache.match(request, { ignoreSearch: true });
     return cached || Response.error();
   }
 }
 
 async function staleWhileRevalidate(request, event) {
   const cache = await caches.open(CACHE);
-  const cached = await cache.match(request);
+  const cached = await cache.match(request, { ignoreSearch: true });
   const update = fetch(request).then(response => {
     if (response.ok) cache.put(request, response.clone());
     return response;
@@ -70,7 +71,7 @@ self.addEventListener('fetch', event => {
   // The shell, scripts and catalog are update-sensitive.
   const updateSensitive = request.mode === 'navigate' ||
     url.pathname.endsWith('/index.html') ||
-    url.pathname.endsWith('/assets/hub.js') ||
+    /\.(?:js|css|html|json|webmanifest)$/.test(url.pathname) ||
     url.pathname.endsWith('/games/catalog.json') ||
     url.pathname.endsWith('/sw.js');
   if (updateSensitive) {

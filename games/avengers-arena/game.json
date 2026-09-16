@@ -1,10 +1,10 @@
 {
   "name": "Avengers Arena",
-  "description": "Four legendary heroes. One rooftop showdown. Pick your Avenger and unleash your superpower.",
+  "description": "Four heroes. A rooftop tournament. Master combos, choose a combat perk and climb twelve increasingly demanding battles.",
   "category": "Action",
   "players": "Solo vs AI",
-  "detail": "75-second battles",
+  "detail": "12 stages · 3 combat perks",
   "icon": "icon.svg",
-  "cover": "cover.png",
+  "cover": "cover.webp",
   "featured": true
 }

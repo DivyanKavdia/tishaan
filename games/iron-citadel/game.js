@@ -1,11 +1,11 @@
 import { Game, LEVELS, clamp } from './engine.js';
-import { Renderer } from './art.js';
+import { Renderer } from './scene.js';
 
 const $=id=>document.getElementById(id);
-const coarse=matchMedia('(pointer:coarse)').matches;
+const coarse=navigator.maxTouchPoints>0||matchMedia('(pointer:coarse)').matches||innerWidth<=700;
 const reducedMotion=matchMedia('(prefers-reduced-motion:reduce)').matches;
 let stored={};try{stored=JSON.parse(localStorage.getItem('iron-citadel-v1')||'{}')||{};}catch{}
-let best=Math.max(0,Number(stored.best)||0),unlocked=clamp(Number(stored.unlocked)||0,0,2),muted=stored.muted===true;
+let best=Math.max(0,Number(stored.best)||0),unlocked=clamp(Number(stored.unlocked)||0,0,LEVELS.length-1),muted=stored.muted===true;
 const save=()=>{try{localStorage.setItem('iron-citadel-v1',JSON.stringify({best,unlocked,muted}));}catch{}};
 let game=new Game(),checkpoint=null,selectedLevel=0,expandedMap=false,dirty=true,last=performance.now(),uiTime=0,lastPhase='menu',toastTimer;
 game.player.a=-.18;
@@ -27,6 +27,7 @@ function tone(type){
   }catch{}
 }
 function updateMenu(){
+  if($('sector').options.length!==LEVELS.length)$('sector').innerHTML=LEVELS.map((l,i)=>`<option value="${i}">${l.name}</option>`).join('');
   $('best').textContent=`BEST ${String(best).padStart(5,'0')}`;
   [...$('sector').options].forEach((option,i)=>{option.disabled=i>unlocked;option.textContent=`0${i+1} / ${LEVELS[i].name}${i>unlocked?' — locked':''}`;});
   $('sound').setAttribute('aria-pressed',String(muted));$('sound').setAttribute('aria-label',muted?'Enable sound':'Mute sound');$('sound').firstChild.textContent=muted?'♫ ':'♪ ';
@@ -44,7 +45,7 @@ function start(){
   unlockAudio();clearInput();selectedLevel=Number($('sector').value);
   game=new Game(document.querySelector('[name="difficulty"]:checked').value);
   if(selectedLevel>0)game.loadLevel(selectedLevel);
-  if(selectedLevel===2){game.player.rifle=true;game.player.weapon=1;}
+  if(selectedLevel>=2){game.player.rifle=true;game.player.weapon=1;}
   rememberCheckpoint();game.start();dirty=true;
   $('scene').focus({preventScroll:true});
   notify(coarse?'Left stick: move. Drag right: look. Hold FIRE.':'WASD: move · ← →: turn · SPACE: fire · E: open',4500);
@@ -80,7 +81,7 @@ function events(){
     if(event.type==='empty')notify('Out of ammo. Switch to the SHOCK tool or find supplies.');
     if(event.type==='kill'&&event.boss)notify('WARDEN DEFEATED — reach the gold exit!',4000);
     if(event.type==='complete'){
-      best=Math.max(best,game.score);unlocked=Math.max(unlocked,Math.min(2,game.levelIndex+1));save();clearInput();releaseMouse();showDialog();
+      best=Math.max(best,game.score);unlocked=Math.max(unlocked,Math.min(LEVELS.length-1,game.levelIndex+1));save();clearInput();releaseMouse();showDialog();
     }
     if(event.type==='dead'){clearInput();releaseMouse();showDialog();}
   }
@@ -92,7 +93,7 @@ function updateHUD(){
   $('ammo').innerHTML=game.reloading?'… <small>LOADING</small>':p.weapon===2?'∞ <small>SHOCK</small>':`${p.ammo} <small>/ ${p.reserve}</small>`;
   $('weapon-name').textContent=['01 / SIDEARM','02 / REPEATER','03 / SHOCK'][p.weapon];$('reload').disabled=p.weapon===2||!!game.reloading||p.ammo===12||!p.reserve;
   $('key').textContent=p.key?'◆':'—';$('score').textContent=String(game.score).padStart(5,'0');
-  $('sector-number').textContent=`SECTOR 0${game.levelIndex+1} / 03`;$('sector-name').textContent=game.level.spec.name.toUpperCase();
+  $('sector-number').textContent=`SECTOR 0${game.levelIndex+1} / ${String(LEVELS.length).padStart(2,'0')}`;$('sector-name').textContent=game.level.spec.name.toUpperCase();
   const bossAlive=game.level.enemies.some(e=>e.type==='boss'&&e.hp>0);
   $('objective').textContent=!p.key?'FIND THE GOLD KEY':bossAlive?'DEFEAT THE WARDEN':'REACH THE GOLD EXIT';
   $('crosshair').classList.toggle('hit',game.hitMarker>0);

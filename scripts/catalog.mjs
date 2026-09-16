@@ -43,9 +43,9 @@ function between(html, name, content) {
 export async function writeCatalog(root = projectRoot) {
   const games = await readCatalog(root);
   const cards = games.map(game => `
-            <article class="game-card" data-genre="${escapeHtml(game.category)}" data-search="${escapeHtml(`${game.name} ${game.category} ${game.description}`.toLocaleLowerCase())}">
+            <article class="game-card" data-slug="${escapeHtml(game.slug)}" data-genre="${escapeHtml(game.category)}" data-search="${escapeHtml(`${game.name} ${game.category} ${game.description}`.toLocaleLowerCase())}">
               <a class="game-link" href="${escapeHtml(game.href)}" aria-label="Play ${escapeHtml(game.name)}">
-                <div class="game-cover"><img src="${escapeHtml(game.cover)}" width="960" height="640" alt="" loading="lazy">${game.featured ? '<span class="game-badge">IN THE SPOTLIGHT</span>' : ''}<span class="cover-mark" aria-hidden="true">PRESS PLAY ↗</span></div>
+                <div class="game-cover"><img src="${escapeHtml(game.cover)}" width="960" height="640" alt="" loading="lazy">${game.featured ? '<span class="game-badge">REIMAGINED</span>' : ''}<span class="cover-mark" aria-hidden="true">PRESS PLAY ↗</span></div>
                 <div class="game-info"><div class="game-heading"><img class="game-icon" src="${escapeHtml(game.icon)}" width="46" height="46" alt="" loading="lazy"><div><h3>${escapeHtml(game.name)}</h3><div class="game-meta"><span>${escapeHtml(game.category)}</span><i aria-hidden="true"></i><span>${escapeHtml(game.players)}</span></div></div></div><p class="game-description">${escapeHtml(game.description)}</p><div class="game-bottom"><span class="game-detail">${escapeHtml(game.detail)}</span><span class="play-now">Play now <span aria-hidden="true">↗</span></span></div></div>
               </a>
             </article>`).join('');

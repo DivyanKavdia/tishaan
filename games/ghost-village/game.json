@@ -1,9 +1,10 @@
 {
   "name": "Ghost Village",
-  "description": "Join three ninjas and the Death Ninja Gang to protect an ancient mountain village from invading ghosts.",
+  "description": "Defend the moonlit shrine with a team of three ninjas. Switch leaders, combine abilities and face spectral bosses.",
   "category": "Action",
   "players": "Solo",
-  "detail": "Ninjas vs. ghosts",
+  "detail": "12 missions · 3 ninja abilities",
   "icon": "icon.svg",
-  "cover": "cover.svg"
+  "cover": "cover.webp",
+  "featured": false
 }

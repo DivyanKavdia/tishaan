@@ -1,0 +1,22 @@
+{
+  "name": "Ghost Village \u00b7 Tishaan\u2019s Game Zone",
+  "short_name": "Ghost Village",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0d171a",
+  "theme_color": "#0d171a",
+  "icons": [
+    {
+      "src": "../../icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "../../icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

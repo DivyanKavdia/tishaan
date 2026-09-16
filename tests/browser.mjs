@@ -68,6 +68,7 @@ try {
         await page.locator('.hero-card').filter({ has: page.locator('.card-name', { hasText: hero }) }).click();
         assert.equal(await page.locator('#hero-name').textContent(), hero);
       }
+      await page.locator('#play-mode').selectOption('quick');
       await page.locator('#opponent').selectOption('hulk');
       await page.locator('#difficulty').selectOption('recruit');
       await page.getByRole('button', { name: 'ENTER THE ARENA' }).click();
@@ -134,7 +135,7 @@ try {
           const button = await page.locator(selector).boundingBox();
           assert.ok(button.y >= surface.y && button.y + button.height <= surface.y + surface.height, `${name}: result action clipped by arena`);
         }
-        await page.getByRole('button', { name: 'REMATCH', exact: true }).click();
+        await page.locator('#rematch-button').click();
         assert.equal(await page.locator('#timer').textContent(), '75');
         assert.ok(await page.locator('#result-overlay').isHidden());
       }

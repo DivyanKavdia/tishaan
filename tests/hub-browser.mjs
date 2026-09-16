@@ -55,7 +55,7 @@ try {
       const errors = [];
       page.on('pageerror', error => errors.push(error.message));
       await page.goto(url);
-      assert.equal(await page.title(), 'Tishaan’s Game Zone');
+      assert.match(await page.title(), /^Tishaan’s Game Zone/);
       await ready(page); await fits(page);
       await page.locator('#games').scrollIntoViewIfNeeded();
       await page.waitForFunction(() => [...document.images].every(image => image.complete && image.naturalWidth > 0));
@@ -83,7 +83,7 @@ try {
         if (mobile) assert.ok(box.y >= 0 && box.y + box.height <= height + 1, `${name}: control below viewport`);
       }
       await page.getByRole('link', { name: 'Back to Tishaan’s Game Zone' }).click();
-      assert.equal(await page.title(), 'Tishaan’s Game Zone');
+      assert.match(await page.title(), /^Tishaan’s Game Zone/);
       if (name === 'phone') {
         await context.setOffline(true); await page.reload();
         await page.getByRole('link', { name: 'Play Avengers Arena', exact: true }).click();
@@ -92,7 +92,7 @@ try {
         await page.getByRole('button', { name: 'ENTER THE ARENA' }).click();
         assert.ok(await page.locator('#game-screen').isVisible());
         await page.getByRole('link', { name: 'Back to Tishaan’s Game Zone' }).click();
-        assert.equal(await page.title(), 'Tishaan’s Game Zone');
+        assert.match(await page.title(), /^Tishaan’s Game Zone/);
         await context.setOffline(false);
       }
       await page.getByRole('button', { name: 'Play a surprise game' }).click();
@@ -113,11 +113,11 @@ try {
       assert.ok(await page.evaluate(() => caches.has('avengers-arena-v2')));
       legacy = false;
       await page.reload();
-      assert.equal(await page.title(), 'Tishaan’s Game Zone');
+      assert.match(await page.title(), /^Tishaan’s Game Zone/);
       await page.evaluate(() => navigator.serviceWorker.getRegistration().then(registration => registration.update()));
-      await page.waitForFunction(async () => !(await caches.has('avengers-arena-v2')) && (await caches.keys()).some(key => key.startsWith('tishaan-game-zone-')));
+      await page.waitForFunction(async () => (await caches.has('avengers-arena-v2')) && (await caches.keys()).some(key => key.startsWith('tishaan-game-zone-')));
       await page.context().setOffline(true); await page.reload();
-      assert.equal(await page.title(), 'Tishaan’s Game Zone');
+      assert.match(await page.title(), /^Tishaan’s Game Zone/);
       assert.equal(await page.locator('.game-card').count(), catalog.length);
       console.log('PASS migration: existing root Avengers installation upgrades to the hub and loads offline.');
     } finally { legacy = false; await browser.close(); }

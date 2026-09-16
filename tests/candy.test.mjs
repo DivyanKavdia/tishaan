@@ -13,7 +13,7 @@ test('every level starts settled and playable across random seeds', () => {
     const game = new CandyGame(level, rng(seed));
     assert.equal(findMatches(game.board).length, 0);
     assert.ok(availableMoves(game.board).length);
-    assert.equal(game.jellyLeft, LEVELS[level].jelly);
+    assert.equal(game.jellyLeft, LEVELS[level].jelly*LEVELS[level].layers);
   }
 });
 test('invalid swaps, diagonal moves, row wrap, and invalid boosts change nothing', () => {

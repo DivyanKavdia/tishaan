@@ -14,6 +14,7 @@ function makeCard(game) {
   const card = document.createElement('article');
   card.className = 'game-card';
   card.dataset.genre = game.category || 'Other';
+  card.dataset.slug = game.slug;
   card.dataset.search = `${game.name} ${game.category} ${game.description} ${game.detail || ''}`.toLocaleLowerCase();
 
   const link = document.createElement('a');
@@ -33,7 +34,7 @@ function makeCard(game) {
   if (game.featured) {
     const badge = document.createElement('span');
     badge.className = 'game-badge';
-    badge.textContent = game.slug === 'monterra' ? 'NEW ADVENTURE' : 'IN THE SPOTLIGHT';
+    badge.textContent = 'REIMAGINED';
     cover.appendChild(badge);
   }
   const coverMark = document.createElement('span');
@@ -149,6 +150,14 @@ async function loadCatalog() {
   }
 
   cards = [...grid.querySelectorAll('.game-card')];
+  try {
+    const last = JSON.parse(localStorage.getItem('tz-last-played') || 'null');
+    const match = cards.find(card => card.dataset.slug === last?.slug);
+    if (match) { const resume = document.getElementById('resume-link'); resume.href = match.querySelector('a').href; document.getElementById('resume-title').textContent = match.querySelector('h3').textContent; resume.hidden = false; }
+  } catch {}
+  for (const card of cards) card.querySelector('a').addEventListener('click', () => {
+    try { localStorage.setItem('tz-last-played', JSON.stringify({slug:card.dataset.slug})); } catch {}
+  });
   rebuildFilters();
   libraryTools.hidden = false;
   surprise.hidden = cards.length === 0;

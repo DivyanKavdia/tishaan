@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#121d24">
-  <meta name="description" content="Enter Iron Citadel: a retro first-person shooter with three fortress missions, secret supplies, a robot army, and a final boss. Play on your phone or desktop.">
+  <meta name="description" content="Enter Iron Citadel: a cinematic first-person adventure with nine fortress missions, secret supplies, a robot army, and a final boss. Play on your phone or desktop.">
   <title>Iron Citadel · Tishaan’s Game Zone</title>
   <link rel="icon" href="./icon.svg" type="image/svg+xml">
   <link rel="manifest" href="../../manifest.webmanifest">
@@ -23,22 +23,22 @@
       <div class="scanlines" aria-hidden="true"></div>
       <div id="menu" class="menu">
         <div class="menu-copy">
-          <div class="eyebrow"><span class="live-dot"></span> A RETRO FIRST-PERSON SHOOTER</div>
+          <div class="eyebrow"><span class="live-dot"></span> A CINEMATIC FORTRESS ADVENTURE</div>
           <h1>IRON<br><span>CITADEL</span><sup>3D</sup></h1>
           <p class="tagline">One operative. A fortress of steel.<br>Find the key. Fight your way out.</p>
           <div class="mission-trail"><span><b>01</b> INFILTRATE</span><i>→</i><span><b>02</b> ARM UP</span><i>→</i><span><b>03</b> ESCAPE</span></div>
           <div class="setup">
-            <fieldset><legend>CHOOSE YOUR CHALLENGE</legend><label><input type="radio" name="difficulty" value="explorer" checked><span>Explorer<small>A gentler first mission</small></span></label><label><input type="radio" name="difficulty" value="classic"><span>Classic<small>The old-school challenge</small></span></label></fieldset>
+            <fieldset><legend>CHOOSE YOUR CHALLENGE</legend><label><input type="radio" name="difficulty" value="explorer" checked><span>Explorer<small>A gentler first mission</small></span></label><label><input type="radio" name="difficulty" value="classic"><span>Classic<small>The old-school challenge</small></span></label><label><input type="radio" name="difficulty" value="veteran"><span>Veteran<small>Faster threats, higher stakes</small></span></label></fieldset>
             <div class="sector-select"><label for="sector">DEPLOY TO</label><select id="sector"><option value="0">01 / The Outpost</option><option value="1" disabled>02 / The Foundry — locked</option><option value="2" disabled>03 / Iron Citadel — locked</option></select></div>
             <button id="start" class="primary">ENTER THE FORTRESS <span>↗</span></button>
-            <div class="start-note"><span>3 MISSIONS · NO SIGN-IN</span><span id="best">BEST 00000</span></div>
+            <div class="start-note"><span>9 MISSIONS · NO SIGN-IN</span><span id="best">BEST 00000</span></div>
           </div>
         </div>
         <div class="scene-caption"><span>TRANSMISSION 001</span><strong>THE OUTPOST</strong><p>Enemy systems online.<br>Your mission starts here.</p><span class="signal">▂▄▆█ <i> SIGNAL ACQUIRED</i></span></div>
         <details class="instructions"><summary>FIELD MANUAL <span>+</span></summary><div><p><strong>Phone:</strong> left stick to move; drag the right side to turn; hold FIRE to shoot. Tap OPEN beside a door or exit.</p><p><strong>Desktop:</strong> WASD to move, arrows to turn, mouse drag or Mouse aim to look, Space/click to fire. E opens doors, R reloads, 1/2/3 change weapons, M opens map, Esc pauses.</p><p>Collect the gold key, then use the gold EXIT. Red visors flash before enemies shoot: move sideways to dodge. The Foundry has a repeater. The shock tool uses no ammo. Progress saves after each mission.</p></div></details>
       </div>
       <div id="play-ui" hidden>
-        <div class="mission-hud"><span id="sector-number">SECTOR 01 / 03</span><strong id="sector-name">THE OUTPOST</strong><span id="objective">FIND THE GOLD KEY</span></div>
+        <div class="mission-hud"><span id="sector-number">SECTOR 01 / 09</span><strong id="sector-name">THE OUTPOST</strong><span id="objective">FIND THE GOLD KEY</span></div>
         <div class="game-actions"><button id="map-button" aria-label="Expand map" aria-pressed="false">▦ <span>MAP</span></button><button id="pause" aria-label="Pause game">Ⅱ <span>PAUSE</span></button></div>
         <div class="map-wrap" id="map-wrap"><canvas id="map" width="112" height="112" aria-label="Explored map. Gold marks the exit and discovered key."></canvas><span>↑ YOU · GOLD: KEY / EXIT</span></div>
         <div id="crosshair" aria-hidden="true"><i></i><b></b><span></span></div>

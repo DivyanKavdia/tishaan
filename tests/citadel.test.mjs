@@ -65,13 +65,13 @@ test('citadel: enemy attacks are telegraphed and can be dodged',()=>{
 test('citadel: supplies stay available at capacity and are picked up when needed',()=>{
   const game=new Game();game.start();quiet(game);const item=game.level.items.find(i=>i.type==='health');Object.assign(game.player,{x:item.x,y:item.y});game.update(.02);assert.equal(item.taken,false);game.player.hp=30;game.update(.02);assert.equal(game.player.hp,70);assert.equal(item.taken,true);
 });
-test('citadel: a complete three-sector route opens doors, collects keys, and reaches victory',()=>{
+test('citadel: a complete nine-sector route opens doors, collects keys, and reaches victory',()=>{
   const game=new Game();game.start();
-  for(let index=0;index<3;index++){
+  for(let index=0;index<LEVELS.length;index++){
     quiet(game);const key=game.level.items.find(i=>i.type==='key');walkTo(game,key.x,key.y);assert.equal(game.player.key,true);
     const [ex,ey]=game.level.spec.exit,adjacent=[[ex-1,ey],[ex+1,ey],[ex,ey-1],[ex,ey+1]].find(to=>route(game.level,game.player,to));
     walkTo(game,adjacent[0]+.5,adjacent[1]+.5);game.player.a=Math.atan2(ey+.5-game.player.y,ex+.5-game.player.x);
     if(index===2){const boss=game.level.enemies.find(e=>e.type==='boss');boss.hp=1;game.interact();assert.equal(game.phase,'playing');boss.hp=0;}
-    game.interact();assert.equal(game.phase,index===2?'won':'complete');if(index<2){game.next();assert.equal(game.player.key,false);assert.equal(game.levelIndex,index+1);}
+    game.interact();assert.equal(game.phase,index===LEVELS.length-1?'won':'complete');if(index<LEVELS.length-1){game.next();assert.equal(game.player.key,false);assert.equal(game.levelIndex,index+1);}
   }
 });

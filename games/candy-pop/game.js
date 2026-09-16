@@ -21,10 +21,10 @@ export function candySvg(candy, index) {
   if (special === 'row' || special === 'column') decoration = `<g clip-path="url(#clip${index})" stroke="#fff" opacity=".8" stroke-width="4" transform="${special === 'column' ? 'rotate(90 28 28)' : ''}"><path d="M4 18H52M4 28H52M4 38H52"/></g>`;
   if (special === 'wrapped') decoration = '<rect x="10" y="10" width="36" height="36" rx="10" fill="none" stroke="#fff3a9" stroke-width="4"/><path d="M18 28H38M28 18V38" stroke="#fff" stroke-width="4" stroke-linecap="round"/>';
   if (special === 'rainbow') decoration = '<g><rect x="16" y="13" width="5" height="9" rx="2" fill="#ffe076" transform="rotate(-25 19 17)"/><rect x="34" y="15" width="5" height="8" rx="2" fill="#fd92bb" transform="rotate(30 36 18)"/><rect x="24" y="26" width="5" height="8" rx="2" fill="#83e4c9" transform="rotate(50 26 30)"/><rect x="12" y="32" width="5" height="8" rx="2" fill="#bc9aff"/><rect x="33" y="35" width="5" height="8" rx="2" fill="#91d9ff" transform="rotate(-30 36 39)"/><circle cx="41" cy="28" r="2" fill="#ffe284"/></g>';
-  return `<svg class="candy" viewBox="0 0 56 56" aria-hidden="true"><defs><linearGradient id="c${index}" x1="0" y1="0" x2=".75" y2="1" gradientUnits="objectBoundingBox"><stop stop-color="${special === 'rainbow' ? '#aa7d9b' : p[0]}"/><stop offset=".5" stop-color="${special === 'rainbow' ? '#754661' : p[1]}"/><stop offset="1" stop-color="${special === 'rainbow' ? '#482d47' : p[2]}"/></linearGradient><clipPath id="clip${index}">${body}</clipPath></defs><g fill="url(#c${index})" stroke="${special === 'rainbow' ? '#63405a' : p[2]}" stroke-width="1.3">${body}</g>${decoration}<path d="M17 18Q22 11 29 13" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".6"/></svg>`;
+  return `<svg class="candy" viewBox="0 0 56 56" aria-hidden="true"><defs><linearGradient id="c${index}" x1="0" y1="0" x2=".75" y2="1" gradientUnits="objectBoundingBox"><stop stop-color="${special === 'rainbow' ? '#aa7d9b' : p[0]}"/><stop offset=".5" stop-color="${special === 'rainbow' ? '#754661' : p[1]}"/><stop offset="1" stop-color="${special === 'rainbow' ? '#482d47' : p[2]}"/></linearGradient><clipPath id="clip${index}">${body}</clipPath></defs><g fill="url(#c${index})" stroke="${special === 'rainbow' ? '#63405a' : p[2]}" stroke-width="1.3">${body}</g><g clip-path="url(#clip${index})"><ellipse cx="21" cy="15" rx="17" ry="9" fill="#fff" opacity=".18"/><path d="M7 34Q28 54 48 32L48 49H7Z" fill="#44152b" opacity=".13"/><ellipse cx="30" cy="43" rx="13" ry="3" fill="#fff" opacity=".22"/></g>${decoration}<path d="M17 18Q22 11 29 13" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".6"/></svg>`;
 }
 
-let progress = { unlocked: 0, stars: {}, best: {}, sound: true, active: null };
+let progress = { difficulty:'relaxed', unlocked: 0, stars: {}, best: {}, sound: true, active: null };
 try {
   const saved = JSON.parse(localStorage.getItem(STORAGE));
   if (saved && Number.isInteger(saved.unlocked) && saved.unlocked >= 0 && saved.unlocked < LEVELS.length) {
@@ -33,11 +33,17 @@ try {
       for (let i = 0; i < LEVELS.length; i++) if (Number.isFinite(saved[key][i]) && saved[key][i] >= 0) progress[key][i] = key === 'stars' ? Math.min(3, Math.floor(saved[key][i])) : Math.min(1e8, Math.floor(saved[key][i]));
     }
     progress.sound = saved.sound !== false;
+    if(['relaxed','classic','expert'].includes(saved.difficulty))progress.difficulty=saved.difficulty;
     progress.active = saved.active;
   }
 } catch { /* The game remains playable when browser storage is unavailable. */ }
+$('challenge').value=progress.difficulty;
+$('challenge').onchange=()=>{progress.difficulty=$('challenge').value;startLevel(game.level);};
 const restored = progress.active?.level <= progress.unlocked ? CandyGame.restore(progress.active) : null;
-let game = restored || new CandyGame(progress.unlocked);
+let game = restored || new CandyGame(progress.unlocked,Math.random,progress.difficulty);
+// Resume an older board with its original challenge, including classic v1 saves.
+progress.difficulty=game.difficulty;
+$('challenge').value=game.difficulty;
 let selected = null, hammer = false, busy = false, started = false, focusIndex = 0, pointer = null, audioContext;
 let hintTimer, messageTimer, primaryAction = () => {}, secondaryAction = () => {}, closeAction = () => {};
 
@@ -68,7 +74,7 @@ function planHint() {
 }
 function renderBoard(board = game.board, jelly = game.jelly) {
   const focused = document.activeElement?.closest?.('.cell')?.dataset.index;
-  $('board').innerHTML = board.map((c, i) => `<button class="cell${jelly[i] ? ' jelly' : ''}${selected === i ? ' selected' : ''}" data-index="${i}" tabindex="${i === focusIndex ? 0 : -1}" aria-label="Row ${Math.floor(i / SIZE) + 1}, column ${i % SIZE + 1}: ${c.special === 'rainbow' ? 'Rainbow candy bomb' : `${COLORS[c.color]} candy${c.special ? `, ${c.special} special` : ''}`}${jelly[i] ? ', jelly underneath' : ''}" aria-pressed="${selected === i}">${candySvg(c, i)}</button>`).join('');
+  $('board').innerHTML = board.map((c, i) => `<button class="cell${jelly[i] ? ' jelly' : ''}${jelly[i]>1?' double-jelly':''}${selected === i ? ' selected' : ''}" data-index="${i}" tabindex="${i === focusIndex ? 0 : -1}" aria-label="Row ${Math.floor(i / SIZE) + 1}, column ${i % SIZE + 1}: ${c.special === 'rainbow' ? 'Rainbow candy bomb' : `${COLORS[c.color]} candy${c.special ? `, ${c.special} special` : ''}`}${jelly[i] ? ', jelly underneath' : ''}" aria-pressed="${selected === i}">${candySvg(c, i)}</button>`).join('');
   $('board').classList.toggle('hammer-mode', hammer);
   if (focused !== undefined) $('board').children[Number(focused)]?.focus({ preventScroll: true });
 }
@@ -79,12 +85,14 @@ function renderStats(score = game.score, jelly = game.jelly) {
   $('level-number').textContent = game.level + 1;
   $('world-name').textContent = game.rules.name;
   $('journey').textContent = game.rules.name;
-  $('journey-count').textContent = `${String(game.level + 1).padStart(2, '0')} / 24`;
+  $('journey-count').textContent = `${String(game.level + 1).padStart(2, '0')} / ${LEVELS.length}`;
   $('goal').textContent = `Reach ${game.rules.target.toLocaleString('en')} points`;
   const remaining = jelly.reduce((a, b) => a + b, 0);
   $('jelly-goal').hidden = !game.rules.jelly;
   $('jelly-goal').textContent = `◇ ${remaining} jelly left`;
-  $('goal-check').hidden = score < game.rules.target;
+  $('goal-check').hidden = score < game.rules.target || game.collectionLeft>0 || remaining>0;
+  $('collection-goal').hidden=!game.rules.collectTarget;
+  $('collection-goal').textContent=game.rules.collectTarget?`${COLORS[game.rules.collectColor]} recipe · ${game.rules.collectTarget-game.collectionLeft}/${game.rules.collectTarget}`:'';
   $('progress').style.width = `${Math.min(100, score / game.rules.target * 100)}%`;
   const bar = $('progress').parentElement;
   bar.setAttribute('aria-valuemax', game.rules.target); bar.setAttribute('aria-valuenow', Math.min(score, game.rules.target));
@@ -243,7 +251,7 @@ $('modal-secondary').addEventListener('click', () => secondaryAction());
 $('modal-close').addEventListener('click', closeModal);
 $('modal').addEventListener('cancel', event => { event.preventDefault(); closeModal(); });
 function startLevel(level) {
-  game = new CandyGame(level); selected = null; hammer = false; focusIndex = 0; started = true;
+  game = new CandyGame(level,Math.random,progress.difficulty); selected = null; hammer = false; focusIndex = 0; started = true;
   $('celebration').innerHTML = ''; renderBoard(); renderStats(); save();
   if ($('modal').open) $('modal').close();
   message(game.jellyLeft ? 'Match over pink jelly and reach your score target.' : 'Swipe a candy to match 3 of the same kind.'); planHint();
@@ -251,7 +259,7 @@ function startLevel(level) {
 function showMap() {
   if (busy) return;
   modal({ title: 'Your candy trail', kicker: 'ONE SWEET STEP AT A TIME', art: '⚑', primary: 'Back to game', onClose: () => { started = true; },
-    content: '<p>Four sweet worlds. How far will you go?</p><div class="level-grid">' + LEVELS.map((level, i) => `<button class="level-choice${i === game.level ? ' current' : ''}" data-level="${i}" ${i > progress.unlocked ? 'disabled' : ''} aria-label="Level ${i + 1}, ${level.name}${i > progress.unlocked ? ', locked' : ''}">${i + 1}<small>${progress.stars[i] ? '★'.repeat(progress.stars[i]) : i > progress.unlocked ? '•' : '—'}</small></button>`).join('') + '</div>' });
+    content: '<p>Six sweet worlds. How far will you go?</p><div class="level-grid">' + LEVELS.map((level, i) => `<button class="level-choice${i === game.level ? ' current' : ''}" data-level="${i}" ${i > progress.unlocked ? 'disabled' : ''} aria-label="Level ${i + 1}, ${level.name}${i > progress.unlocked ? ', locked' : ''}">${i + 1}<small>${progress.stars[i] ? '★'.repeat(progress.stars[i]) : i > progress.unlocked ? '•' : '—'}</small></button>`).join('') + '</div>' });
   $('modal-content').querySelectorAll('[data-level]').forEach(el => el.addEventListener('click', () => {
     const level = Number(el.dataset.level);
     if (level === game.level && game.status === 'playing') { started = true; closeModal(); return; }
@@ -264,13 +272,13 @@ $('restart').addEventListener('click', () => {
   modal({ title: 'A fresh start?', art: '↻', content: '<p>Restart this level with a new board, all your moves, and two of each booster.</p>', primary: 'Restart level', action: () => startLevel(game.level), secondary: closeModal, secondaryLabel: 'Keep playing' });
 });
 $('help').addEventListener('click', () => modal({ title: 'Small swaps. Big magic.', kicker: 'HOW TO PLAY',
-  content: '<div class="tutorial"><div><b>Swipe</b> a candy into its neighbor, or tap two neighbors. Match <b>3 of the same kind</b>.</div><div><b>4 in a line</b> makes a striped candy. <b>L or T</b> makes a wrapped candy. <b>5 in a line</b> makes a rainbow bomb.</div><div>Match a special candy to activate it. Swap a <b>rainbow</b> with any color, or combine <b>two specials</b>!</div><div>Reach the score target before moves run out. When you see <b>pink jelly</b>, match on every jelly tile too.</div><div><b>Hint</b> is free. <b>Pop one</b> and <b>Shuffle</b> never cost a move. You get two of each per level.</div><div>Keyboard: arrows to move focus, Space or Enter to select. Hold Shift + an arrow to swap.</div></div>', primary: 'Got it!', onClose: () => { started = true; } }));
+  content: '<div class="tutorial"><div><b>Swipe</b> a candy into its neighbor, or tap two neighbors. Match <b>3 of the same kind</b>.</div><div><b>4 in a line</b> makes a striped candy. <b>L or T</b> makes a wrapped candy. <b>5 in a line</b> makes a rainbow bomb.</div><div>Match a special candy to activate it. Swap a <b>rainbow</b> with any color, or combine <b>two specials</b>!</div><div>Reach the score target before moves run out. When you see <b>pink jelly</b>, match on every jelly tile too.</div><div>Recipe levels also ask you to collect a specific candy color. The goal is shown above the board.</div><div><b>Hint</b> is free. <b>Pop one</b> and <b>Shuffle</b> never cost a move. You get two of each per level.</div><div>Keyboard: arrows to move focus, Space or Enter to select. Hold Shift + an arrow to swap.</div></div>', primary: 'Got it!', onClose: () => { started = true; } }));
 function showResult() {
   const won = game.status === 'won';
   if (won) sound('win');
   const last = game.level === LEVELS.length - 1;
   modal({ title: won ? last ? 'You’re a candy champion!' : 'Oh, so sweet!' : 'One more sweet try?', kicker: won ? `LEVEL ${game.level + 1} COMPLETE` : 'OUT OF MOVES', art: won ? '★' : '♡',
-    content: `${won ? `<div class="result-stars" aria-label="${game.stars} stars">${'★'.repeat(game.stars)}${'☆'.repeat(3 - game.stars)}</div>` : ''}<p>${won ? last ? 'You made it through all 24 levels! Replay your favorites to collect more stars.' : 'A delicious win. The next stop on your candy trail is ready!' : 'A new board could be your lucky one. There’s no waiting to play again.'}</p><div class="target-card"><span><b>${game.score.toLocaleString('en')}</b><br>points</span><span><b>${won ? game.moves : game.jellyLeft || '—'}</b><br>${won ? 'moves left' : 'jelly left'}</span></div>`,
+    content: `${won ? `<div class="result-stars" aria-label="${game.stars} stars">${'★'.repeat(game.stars)}${'☆'.repeat(3 - game.stars)}</div>` : ''}<p>${won ? last ? 'You made it through all 36 levels! Replay your favorites to collect more stars.' : 'A delicious win. The next stop on your candy trail is ready!' : 'A new board could be your lucky one. There’s no waiting to play again.'}</p><div class="target-card"><span><b>${game.score.toLocaleString('en')}</b><br>points</span><span><b>${won ? game.moves : game.jellyLeft || '—'}</b><br>${won ? 'moves left' : 'jelly left'}</span></div>`,
     primary: won && !last ? `Play level ${game.level + 2} →` : won ? 'Explore the level map' : 'Try again →',
     action: () => won && last ? showMap() : startLevel(won ? game.level + 1 : game.level), secondary: showMap,
     onClose: () => { message('Use the level menu or restart to play again.'); } });
@@ -279,7 +287,7 @@ document.addEventListener('visibilitychange', () => { if (document.hidden) { cle
 window.addEventListener('pagehide', save);
 renderBoard(); renderStats();
 modal({ title: restored ? 'Welcome back, sweet tooth.' : 'Hello, sweet tooth.', kicker: restored ? 'YOUR SWEET ADVENTURE CONTINUES' : 'LET’S MAKE SOME MAGIC',
-  content: `<p>${restored ? 'Your candy board is right where you left it.' : 'Swap colorful candies, make magical matches, and follow a trail of 24 sweet puzzles.'}</p><div class="target-card"><span><b>Level ${game.level + 1}</b><br>${game.rules.name}</span><span><b>${game.rules.target.toLocaleString('en')}</b><br>point target</span></div><p>Swipe to match <b>3 of the same kind</b>.</p>`,
+  content: `<p>${restored ? 'Your candy board is right where you left it.' : 'Swap colorful candies, make magical matches, and follow a trail of 36 sweet puzzles.'}</p><div class="target-card"><span><b>Level ${game.level + 1}</b><br>${game.rules.name}</span><span><b>${game.rules.target.toLocaleString('en')}</b><br>point target</span></div><p>Swipe to match <b>3 of the same kind</b>.</p>`,
   primary: restored ? 'Keep playing →' : 'Let’s play →', onClose: () => { started = true; save(); } });
 
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js', { scope: './' }).catch(() => {});

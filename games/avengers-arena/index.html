@@ -6,12 +6,12 @@
   <meta name="theme-color" content="#101217">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="description" content="Pick an Avenger. Take on the arena. A pocket-sized, touch-controlled browser fighting game.">
+  <meta name="description" content="Pick an Avenger. Take on the arena. A cinematic 3D fighting game with twelve tournament stages.">
   <link rel="icon" href="./icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="./icon-192.png">
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="stylesheet" href="./styles.css">
-  <title>Avengers Arena · Pocket Edition</title>
+  <title>Avengers Arena · Studio Edition</title>
 </head>
 <body>
   <div class="app-shell">
@@ -28,12 +28,12 @@
       <section id="select-screen" class="select-screen" aria-labelledby="select-title">
         <div class="setup-grid">
           <div class="intro">
-            <div class="eyebrow"><span class="tiny-line"></span> FOUR HEROES. ONE ARENA.</div>
+            <div class="eyebrow"><span class="tiny-line"></span> FOUR HEROES. TWELVE CHALLENGES.</div>
             <h1 id="select-title">PICK YOUR<br><span>POWER.</span></h1>
-            <p>Big heroes. Pocket-sized battles.<br>Choose your Avenger and take the rooftop.</p>
-            <div class="game-facts"><span><i></i> SOLO VS AI</span><span>75-SECOND ROUNDS</span></div>
+            <p>A cinematic rooftop tournament.<br>Choose your hero. Master the climb.</p>
+            <div class="game-facts"><span><i></i> SOLO VS AI</span><span>12-STAGE TOURNAMENT</span></div>
           </div>
-          <div class="hero-preview" id="hero-preview">
+          <div class="hero-preview" id="hero-preview" style="background-image:linear-gradient(90deg,#12202b88,#12202b11),url(./cover.webp);background-size:cover;background-position:center">
             <div class="preview-grid" aria-hidden="true"></div>
             <div class="preview-orbit orbit-one" aria-hidden="true"></div><div class="preview-orbit orbit-two" aria-hidden="true"></div>
             <span class="preview-index" aria-hidden="true">01 / 04</span>
@@ -48,12 +48,15 @@
 
         <div class="launch-panel">
           <div class="match-options">
+            <label>PLAY MODE<select id="play-mode"><option value="campaign">Tournament · 12 stages</option><option value="quick">Quick battle</option></select></label>
+            <label>TOURNAMENT STAGE<select id="campaign-stage"></select></label>
+            <label>SUIT PERK<select id="suit-perk"><option value="power">Power · stronger strikes</option><option value="energy">Energy · faster recharge</option><option value="guard">Defense · stronger guard</option></select></label>
             <label for="difficulty">DIFFICULTY<select id="difficulty"><option value="recruit">Recruit · easy</option><option value="hero" selected>Hero · normal</option><option value="avenger">Avenger · hard</option></select></label>
             <label for="opponent">OPPONENT<select id="opponent"><option value="random">Surprise me</option><option value="ironman">Iron Man</option><option value="captain">Captain America</option><option value="thor">Thor</option><option value="hulk">Hulk</option></select></label>
           </div>
           <button class="primary-button enter-button" id="start-button"><span>ENTER THE ARENA</span><span aria-hidden="true">↗</span></button>
         </div>
-        <p class="setup-note"><span class="touch-note">Made for your thumbs.</span> No downloads. No sign-in. Just battle.</p>
+        <p class="campaign-progress" id="campaign-progress"></p><p class="setup-note"><span class="touch-note">Made for your thumbs.</span> No downloads. No sign-in. Just battle.</p>
       </section>
 
       <section id="game-screen" class="game-screen" aria-label="Battle arena" hidden>
@@ -64,7 +67,7 @@
           <div class="fighter-hud enemy-hud"><div class="fighter-label"><span id="enemy-name">THOR</span><small>CPU</small></div><div class="health-track" role="progressbar" id="enemy-health" aria-label="Opponent health" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><div class="health-fill" id="enemy-health-fill"></div></div><div class="energy-line"><div class="energy-track"><div id="enemy-energy-fill"></div></div><span>OPPONENT</span></div></div>
         </div>
         <div class="game-surface" id="game-surface">
-          <canvas id="arena" width="1120" height="560" tabindex="0" aria-label="Avengers fighting arena. Use the controls below, or arrow keys to move, space to jump, J to strike, K for a special move, and L to guard.">This game needs a browser that supports HTML canvas.</canvas>
+          <canvas id="arena-3d" aria-hidden="true"></canvas><canvas id="arena" width="1120" height="560" tabindex="0" aria-label="Avengers fighting arena. Use the controls below, or arrow keys to move, space to jump, J to strike, K for a special move, and L to guard.">This game needs a browser that supports HTML canvas.</canvas>
           <div class="arena-vignette" aria-hidden="true"></div>
           <div class="announcement" id="announcement" aria-live="polite"><span>GET READY</span><strong>3</strong></div>
           <div class="overlay" id="pause-overlay" hidden><div class="overlay-card"><div class="eyebrow">TAKE A BREATHER</div><h2>Battle paused.</h2><p>Your arena will be right here.</p><button id="resume-button" class="primary-button">BACK TO BATTLE <span aria-hidden="true">↗</span></button><button id="quit-button" class="secondary-button">Change fighter</button></div></div>

@@ -4,14 +4,23 @@
 
 A mobile game hub with illustrated game cards, instant launch, search, category filters, and a surprise-game button. The landing page works without JavaScript; JavaScript adds browsing controls and offline caching.
 
-## Games
+## Reimagined collection
 
-- [Candy Pop](https://divyankavdia.github.io/tishaan/games/candy-pop/): a candy match-three adventure with 24 levels, striped and wrapped candies, rainbow bombs, special combinations, jelly goals, free hints, two boosters of each type per level, and saved progress. Swipe or tap adjacent candies; keyboard users can select with Space/Enter or swap with Shift + arrows. Visit online once for offline play. Progress stays in the current browser; private browsing or cleared site data can remove it.
-- [Iron Citadel](https://divyankavdia.github.io/tishaan/games/iron-citadel/): a retro first-person shooter with three fortress missions, robot sentries, a final boss, gold keys, a sidearm, a repeater, and an unlimited shock tool. Touch and desktop controls, two difficulties, mission unlocks, sound, and offline play.
+| Game | Progression | Choices and gameplay |
+| --- | --- | --- |
+| Avengers Arena | 12 tournament stages | Four heroes, three combat perks, quick battles, three difficulties |
+| Candy Pop | 36 levels / six worlds | Three challenges, recipes, double-layer jelly, combos and boosters |
+| Chikoo & Bunty | 12 neighborhood runs | Two brothers, three lanes, jumping, sliding and protective dash |
+| Dragon Keep TD | 12 missions / four paths | Three tower types, upgrades, selling, armor, slowing and meteor |
+| Ghost Village | 12 defense missions | Three switchable ninjas, companion AI, independent powers, shrine defense |
+| Iron Citadel | Nine sectors | First-person 3D, three weapons, ammunition, keys, three difficulties |
+| Iron Flight | 12 routes | Three suit modules, free steering, homing fire, shields and boss encounters |
+| Monterra Wilds | Six guardian sigils | Fifteen creature forms, capture/evolution, guarding, switching and three challenges |
+| World Strike | 12 missions | Four weapons, cover, reloads, EMP and escalating robot waves |
 
-- [Avengers Arena](https://divyankavdia.github.io/tishaan/games/avengers-arena/): choose Iron Man, Captain America, Thor, or Hulk and fight an AI opponent. Includes touch controls, special moves, three difficulties, 75-second rounds, sound, pause, and rematches.
+Eight games render real-time 3D scenes; Candy Pop uses a polished SVG puzzle board. The lightweight shared WebGL renderer provides directional lighting, soft shadow maps, surface variation, tone mapping and atmospheric fog. Five new campaigns include a battery-saver setting. These are procedural browser games with stylized geometry, not photorealistic AAA games. Cinematic AI-generated cover artwork is promotional art rather than gameplay screenshots.
 
-Iron Citadel controls: WASD moves, arrow keys or mouse drag turn, Space/click fires, E opens doors/exits, R reloads, 1/2/3 or Q changes weapons, M expands the explored map, and Escape pauses. Phones use a movement stick, drag-to-look, and Fire/Open buttons. Complete a mission to save its successor as an unlocked starting point. Switching apps pauses the mission. The game has its own offline worker; visit it online once before playing offline.
+Keyboard and touch controls are explained in each game. Progress is stored on this browser/device; clearing site data removes it. Existing Candy Pop, Iron Citadel and Monterra saves are preserved. The new 12-mission campaigns use their own progression stores.
 
 ## Develop
 
@@ -53,7 +62,8 @@ Each game appears automatically from its metadata; the hub code needs no game-sp
 | Path | Purpose |
 | --- | --- |
 | `index.html` | Landing page with generated game cards |
-| `assets/` | Hub styles, behavior, and controller illustration |
+| `assets/` | Hub styles and behavior |
+| `studio/` | Shared 3D renderer, models, campaign shell, input, progression and offline worker |
 | `games/<slug>/` | An independent game, metadata, and artwork |
 | `games/catalog.json` | Generated catalog, also used to cache card artwork |
 | `scripts/catalog.mjs` | Game discovery, validation, and listing generation |
@@ -65,7 +75,7 @@ Each game appears automatically from its metadata; the hub code needs no game-sp
 
 GitHub Pages publishes the repository root from `main`. Commit the generated catalog before merging. A successful Pages deployment updates the same public Game Zone URL.
 
-The hub and Avengers Arena have separate installable manifests and offline caches. Visit a game online before playing it offline. Use your phone browser’s **Add to Home Screen** option for the hub or an individual game. The hub worker removes only the obsolete root Avengers caches from the previous site layout; it leaves the relocated game's cache intact. The build automatically fingerprints hub assets and catalog artwork to refresh the hub cache. Bump an individual game’s worker version when its offline assets change.
+The hub and all nine games have separate offline caches and manifests. Visit a game online before playing it offline. Use the browser’s **Add to Home Screen** option where supported. `npm run build` fingerprints every game’s files and the shared renderer, regenerating each worker with its own cache prefix. A worker removes only older caches with its own prefix. HTML, scripts and styles use network-first updates with offline fallback; shared modules are precached by each game. No third-party runtime or CDN is required.
 
 ## Verification
 
@@ -83,6 +93,7 @@ npm run test:hub
 npm run test:browser
 npm run test:citadel
 npm run test:candy
+npm run test:studio
 ```
 
 Set `ARENA_BROWSER_PROFILE=phone`, `small-phone`, `landscape`, or `desktop` to check one gameplay layout. `ARENA_SOURCE_SITE=1` runs browser checks against the repository files rather than `dist/`.
@@ -92,3 +103,5 @@ Avengers Arena keyboard controls: arrows or A/D to move, Space/W to jump, J to s
 Iron Citadel uses original procedural pixel art and synthesized audio, with no external asset or runtime dependencies. Its browser checks cover desktop, 390px and 320px phones, landscape controls, and an offline hub/game round trip; its engine checks include traversing all three levels, weapons, collisions, enemy dodging, and progression.
 
 Avengers Arena is an unofficial fan game. Character artwork and audio are drawn or synthesized in the browser; Marvel characters belong to their respective owners. Browser checks emulate devices and do not replace physical iPhone/Safari or Android testing.
+
+The studio browser suite checks all nine games at desktop, phone, narrow-phone and landscape sizes using the built assets. `STUDIO_PROFILE` and `STUDIO_GAME` select a specific profile or game. Existing browser suites exercise real touch input, full combat rounds, puzzle interactions and offline round trips.

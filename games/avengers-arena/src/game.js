@@ -1,5 +1,7 @@
 import { HEROES, createMatch, stepMatch } from './engine.js';
 import { drawHero, drawMatch } from './art.js';
+import {ArenaScene} from './scene.js';
+import {readProgress,saveProgress,completeLevel} from '../../../studio/core.js';
 
 const $ = id => document.getElementById(id);
 const heroIds = Object.keys(HEROES);
@@ -22,6 +24,17 @@ const pointers = new Map();
 const pulseInputs = new Set();
 const arena = $('arena');
 const context = arena.getContext('2d');
+let arenaScene=null;
+const tournament=readProgress('avengers-arena',12);
+const stageNames=['First challenger','Shield lesson','Thunder trial','Gamma rising','Crossfire','Storm watch','Iron resolve','A hero stands','God of thunder','Gamma protocol','Last challenger','Avengers champion'];
+function updateTournament(){
+ const previous=Number($('campaign-stage').value)||0;
+ $('campaign-stage').innerHTML=stageNames.map((name,i)=>`<option value="${i}" ${i>tournament.unlocked?'disabled':''}>${String(i+1).padStart(2,'0')} · ${name}${i>tournament.unlocked?' — locked':''}</option>`).join('');
+ $('campaign-stage').value=Math.min(previous,tournament.unlocked);
+ $('campaign-progress').textContent=`TOURNAMENT · ${tournament.stars.filter(Boolean).length}/12 stages cleared · ${tournament.stars.reduce((a,b)=>a+b,0)}/36 stars`;
+ const campaign=$('play-mode').value==='campaign';$('opponent').disabled=campaign;$('campaign-stage').disabled=!campaign;
+}
+$('play-mode').onchange=updateTournament;updateTournament();
 const tips = {
   ironman: 'REPULSOR BLAST · Fire a ranged energy shot.',
   captain: 'SHIELD THROW · A shield that comes back to you.',
@@ -164,12 +177,20 @@ function startGame(rematch = false) {
     const choices = heroIds.filter(id => id !== selectedHero);
     opponent = choices[Math.floor(Math.random() * choices.length)];
   }
+  const stage=$('play-mode').value==='campaign'?Number($('campaign-stage').value):null;
+  if(stage!==null)opponent=['captain','ironman','thor','hulk'][stage%4];
   if (frame !== null) cancelAnimationFrame(frame);
   document.body.classList.add('is-playing');
   $('select-screen').hidden = true; $('game-screen').hidden = false;
   $('pause-overlay').hidden = true; $('result-overlay').hidden = true;
   $('pause-button').disabled = false;
   match = createMatch({ hero: selectedHero, opponent, difficulty: $('difficulty').value });
+  match.campaignLevel=stage;match.perk=$('suit-perk').value;
+  if(stage!==null){match.enemyDamage=.8+stage*.035;match.enemy.hp=match.enemy.maxHp=Math.round(HEROES[opponent].health*(.8+stage*.04));}
+  document.querySelector('.timer>span').textContent=stage===null?'QUICK BATTLE':`STAGE ${String(stage+1).padStart(2,'0')}`;
+  document.querySelector('.arena-location').textContent=stage===null?'/ FREE PLAY':`/ ${stageNames[stage].toUpperCase()}`;
+  try{arenaScene ||= new ArenaScene($('arena-3d'));$('arena-3d').hidden=false;arena.style.opacity='0';}catch(e){$('arena-3d').hidden=true;arena.style.opacity='1';console.warn('Using the 2D arena renderer.',e.message);}
+
   paused = false; lastFrame = 0; lastAnnouncement = '';
   $('player-name').textContent = HEROES[selectedHero].name.toUpperCase();
   $('enemy-name').textContent = HEROES[opponent].name.toUpperCase();
@@ -224,7 +245,7 @@ function updateHUD() {
   if (!match) return;
   for (const id of ['player', 'enemy']) {
     const actor = match[id], spec = HEROES[actor.hero];
-    $(`${id}-health-fill`).style.width = `${Math.max(0, actor.hp / spec.health * 100)}%`;
+    $(`${id}-health-fill`).style.width = `${Math.max(0, actor.hp / actor.maxHp * 100)}%`;
     $(`${id}-health`).setAttribute('aria-valuenow', Math.ceil(actor.hp));
     $(`${id}-energy-fill`).style.width = `${actor.energy}%`;
   }
@@ -253,6 +274,8 @@ function showResult() {
   $('result-reason').textContent = match.finishReason.toUpperCase();
   $('result-mark').textContent = draw ? '◇' : victory ? '★' : '↺';
   $('result-description').textContent = draw ? 'Even heroes meet their match. Go again?' : victory ? `${HEROES[match.player.hero].name} owns the rooftop. Nicely done.` : `${HEROES[match.enemy.hero].name} takes this round. Your comeback starts here.`;
+  if(victory&&match.campaignLevel!==null){const stars=match.player.hp/match.player.maxHp>=.7?3:match.player.hp/match.player.maxHp>=.35?2:1;completeLevel(tournament,match.campaignLevel,stars,match.player.hits*100,12);saveProgress('avengers-arena',tournament);updateTournament();$('result-description').textContent=`Stage ${match.campaignLevel+1} cleared. ${'★'.repeat(stars)}${'☆'.repeat(3-stars)} · ${stageNames[match.campaignLevel]}`;}
+  $('rematch-button').innerHTML=victory&&match.campaignLevel!==null&&match.campaignLevel<11?'NEXT STAGE <span>↗</span>':'REMATCH <span>↗</span>';
   $('result-hits').textContent = match.player.hits;
   $('result-time').textContent = `${Math.round(75 - match.timeLeft)}s`;
   $('result-overlay').hidden = false;
@@ -262,6 +285,7 @@ function showResult() {
 
 function render() {
   if (!match || !context) return;
+  if(arenaScene){arenaScene.render(match);return;}
   context.setTransform(arena.width / match.width, 0, 0, arena.height / match.height, 0, 0);
   drawMatch(context, match, reducedMotion);
 }
@@ -319,7 +343,7 @@ window.addEventListener('blur', () => { clearInput(); pauseGame(); });
 document.addEventListener('visibilitychange', () => { if (document.hidden) { clearInput(); pauseGame(); } });
 
 $('start-button').addEventListener('click', () => startGame());
-$('rematch-button').addEventListener('click', () => startGame(true));
+$('rematch-button').addEventListener('click', () => {if(match?.winner==='player'&&match.campaignLevel!==null&&match.campaignLevel<11)$('campaign-stage').value=match.campaignLevel+1;startGame(true);});
 $('change-button').addEventListener('click', goMenu);
 $('quit-button').addEventListener('click', goMenu);
 $('pause-button').addEventListener('click', pauseGame);

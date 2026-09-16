@@ -1,9 +1,10 @@
 {
   "name": "Dragon Keep TD",
-  "description": "Build and upgrade arrow, frost, and cannon towers to protect the Dragon Crystal from ten monster waves.",
+  "description": "Protect the Dragon Crystal. Place, upgrade and combine three tower types across four winding battlefields.",
   "category": "Strategy",
   "players": "Solo",
-  "detail": "Tower defence · 10 waves",
+  "detail": "12 missions · 3 tower types",
   "icon": "icon.svg",
-  "cover": "cover.svg"
+  "cover": "cover.webp",
+  "featured": false
 }

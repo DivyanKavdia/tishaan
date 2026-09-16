@@ -1,10 +1,10 @@
 {
   "name": "Monterra Wilds",
-  "description": "Explore a sunlit 3D island, befriend roaming creatures, battle three guardians and unlock fifteen creature forms.",
+  "description": "Explore a living 3D island. Befriend elemental creatures, evolve your team and challenge six powerful guardians.",
   "category": "Adventure",
   "players": "Solo",
-  "detail": "3D world | Catch, battle & evolve",
+  "detail": "6 guardians · 15 creature forms",
   "icon": "icon.svg",
-  "cover": "cover.svg",
+  "cover": "cover.webp",
   "featured": true
 }

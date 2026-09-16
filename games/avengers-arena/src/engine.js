@@ -15,7 +15,7 @@ const clamp = (n, lo, hi) => Math.max(lo, Math.min(hi, n));
 
 function fighter(hero, id, x, facing) {
   const spec = HEROES[hero];
-  return { id, hero, x, y: 0, vy: 0, facing, hp: spec.health, energy: 100, guard: false, moving: 0, attack: null, cooldown: 0, stun: 0, invulnerable: 0, flash: 0, combo: 0, comboWindow: 0, specialBuffer: 0, strikeBuffer: 0, jumpBuffer: 0, damageDealt: 0, hits: 0 };
+  return { id, hero, x, y: 0, vy: 0, facing, hp: spec.health, maxHp: spec.health, energy: 100, guard: false, moving: 0, attack: null, cooldown: 0, stun: 0, invulnerable: 0, flash: 0, combo: 0, comboWindow: 0, specialBuffer: 0, strikeBuffer: 0, jumpBuffer: 0, damageDealt: 0, hits: 0 };
 }
 
 export function createMatch({ hero = 'ironman', opponent = 'thor', difficulty = 'hero', width = 1120, height = 560, random = Math.random } = {}) {
@@ -30,9 +30,9 @@ function effect(match, kind, x, y, color, life = 0.45, extra = {}) {
 function damage(match, attacker, target, amount, direction, isSpecial = false) {
   if (target.hp <= 0 || target.invulnerable > 0) return false;
   const blocking = target.guard && target.energy >= 6 && target.facing === -direction;
-  let actual = amount * (attacker.id === 'enemy' ? DIFFICULTIES[match.difficulty].damage : 1);
+  let actual = amount * (attacker.id === 'enemy' ? DIFFICULTIES[match.difficulty].damage * (match.enemyDamage || 1) : match.perk === 'power' ? 1.12 : 1);
   if (blocking) {
-    actual *= 0.18;
+    actual *= target.id === 'player' && match.perk === 'guard' ? .10 : .18;
     target.energy = Math.max(0, target.energy - (isSpecial ? 18 : 9));
     target.stun = 0.035;
   } else {
@@ -121,7 +121,7 @@ function updateFighter(match, actor, target, input, dt) {
   if (input.jump) actor.jumpBuffer = 0.16;
   actor.facing = target.x >= actor.x ? 1 : -1;
   actor.guard = !!input.guard && actor.y < 1 && actor.stun <= 0 && !actor.attack && actor.energy >= 6;
-  actor.energy = Math.min(100, actor.energy + dt * (actor.guard ? 2.5 : 9));
+  actor.energy = Math.min(100, actor.energy + dt * (actor.guard ? 2.5 : 9) * (actor.id === 'player' && match.perk === 'energy' ? 1.3 : actor.id === 'enemy' && match.campaignLevel >= 4 ? 1.15 : 1));
   if (actor.stun <= 0) {
     const move = Number(!!input.right) - Number(!!input.left);
     actor.moving = move;
@@ -150,8 +150,8 @@ function updateFighter(match, actor, target, input, dt) {
 }
 
 function finish(match) {
-  const p = match.player.hp / HEROES[match.player.hero].health;
-  const e = match.enemy.hp / HEROES[match.enemy.hero].health;
+  const p = match.player.hp / match.player.maxHp;
+  const e = match.enemy.hp / match.enemy.maxHp;
   if (match.player.hp <= 0 || match.enemy.hp <= 0 || match.timeLeft <= 0) {
     match.state = 'finished';
     match.winner = Math.abs(p - e) < 0.0001 ? 'draw' : p > e ? 'player' : 'enemy';

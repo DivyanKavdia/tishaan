@@ -1,11 +1,12 @@
 export const SIZE = 8;
 export const COLORS = ['Rose', 'Orange', 'Lemon', 'Mint', 'Blueberry', 'Grape'];
-export const LEVELS = Array.from({ length: 24 }, (_, i) => ({
-  name: ['Sugar Meadow', 'Jelly Garden', 'Caramel Clouds', 'Sprinkle Summit'][Math.floor(i / 6)],
-  moves: i < 3 ? 25 : 27 + Math.floor(i / 6),
-  target: 1000 + i * 160,
+export const LEVELS = Array.from({ length: 36 }, (_, i) => ({
+  name: ['Sugar Meadow', 'Jelly Garden', 'Caramel Clouds', 'Sprinkle Summit', 'Crystal Confection', 'The Golden Bakery'][Math.floor(i / 6)],
+  moves: i < 3 ? 25 : 29 + Math.floor(i / 6),
+  target: 1000 + i * 115,
   colors: i < 6 ? 5 : 6,
-  jelly: i < 2 ? 0 : Math.min(28, 8 + Math.floor(i / 2) * 2),
+  jelly: i < 2 ? 0 : Math.min(24, 8 + Math.floor(i / 2) * 2),
+  layers: i>=24?2:1, collectColor:i>=12?i%6:null, collectTarget:i>=12?10+Math.floor(i/6)*2:0,
 }));
 const clone = value => JSON.parse(JSON.stringify(value));
 export const adjacent = (a, b) => Number.isInteger(a) && Number.isInteger(b) && a >= 0 && b >= 0 && a < 64 && b < 64 && Math.abs(Math.floor(a / SIZE) - Math.floor(b / SIZE)) + Math.abs(a % SIZE - b % SIZE) === 1;
@@ -46,10 +47,13 @@ export function availableMoves(board) {
 }
 
 export class CandyGame {
-  constructor(level = 0, random = Math.random) {
+  constructor(level = 0, random = Math.random, difficulty = 'classic') {
     this.random = random;
     this.level = Math.max(0, Math.min(LEVELS.length - 1, Math.floor(level) || 0));
-    this.rules = LEVELS[this.level];
+    this.difficulty=['relaxed','classic','expert'].includes(difficulty)?difficulty:'classic';
+    const base=LEVELS[this.level],extra=this.difficulty==='relaxed'?7:this.difficulty==='expert'?-4:0;
+    this.rules = {...base,moves:base.moves+extra,target:Math.round(base.target*(this.difficulty==='relaxed'?.8:this.difficulty==='expert'?1.15:1))};
+    this.collected=Array(6).fill(0);
     this.score = 0;
     this.moves = this.rules.moves;
     this.boosters = { hammer: 2, shuffle: 2 };
@@ -57,7 +61,7 @@ export class CandyGame {
     this.jelly = Array(64).fill(0);
     const positions = Array.from({ length: 64 }, (_, i) => i);
     this.mix(positions);
-    positions.slice(0, this.rules.jelly).forEach(i => { this.jelly[i] = 1; });
+    positions.slice(0, this.rules.jelly).forEach(i => { this.jelly[i] = this.rules.layers; });
     this.board = this.freshBoard();
   }
 
@@ -86,20 +90,24 @@ export class CandyGame {
     return board;
   }
   snapshot() {
-    return clone({ version: 1, level: this.level, score: this.score, moves: this.moves, boosters: this.boosters, status: this.status, board: this.board, jelly: this.jelly });
+    return clone({ version: 1, difficulty:this.difficulty, collected:[...this.collected], level: this.level, score: this.score, moves: this.moves, boosters: this.boosters, status: this.status, board: this.board, jelly: this.jelly });
   }
   static restore(data, random = Math.random) {
     if (!data || data.version !== 1 || !Number.isInteger(data.level) || !LEVELS[data.level] || data.status !== 'playing') return null;
-    const rules = LEVELS[data.level];
+    const difficulty=data.difficulty||'classic';if(!['relaxed','classic','expert'].includes(difficulty))return null;
+    const preview=new CandyGame(data.level,random,difficulty),rules=preview.rules;
     if (!Number.isInteger(data.score) || data.score < 0 || data.score > 1e8 || !Number.isInteger(data.moves) || data.moves <= 0 || data.moves > rules.moves) return null;
     if (!Array.isArray(data.board) || data.board.length !== 64 || !data.board.every(c => c && Number.isInteger(c.color) && c.color >= 0 && c.color < rules.colors && [null, 'row', 'column', 'wrapped', 'rainbow'].includes(c.special))) return null;
-    if (!Array.isArray(data.jelly) || data.jelly.length !== 64 || !data.jelly.every(j => j === 0 || j === 1)) return null;
+    if (!Array.isArray(data.jelly) || data.jelly.length !== 64 || !data.jelly.every(j => Number.isInteger(j) && j>=0 && j<=rules.layers)) return null;
     if (!data.boosters || !['hammer', 'shuffle'].every(k => Number.isInteger(data.boosters[k]) && data.boosters[k] >= 0 && data.boosters[k] <= 2)) return null;
     if (findMatches(data.board).length || !availableMoves(data.board).length) return null;
-    const game = new CandyGame(data.level, random);
+    if(data.collected!==undefined&&(!Array.isArray(data.collected)||data.collected.length!==6||!data.collected.every(n=>Number.isInteger(n)&&n>=0&&n<=100000)))return null;
+    const game = preview;
     Object.assign(game, clone(data));
+    game.difficulty=difficulty;game.collected=data.collected?[...data.collected]:Array(6).fill(0);
     return game;
   }
+  get collectionLeft(){return this.rules.collectColor===null?0:Math.max(0,this.rules.collectTarget-this.collected[this.rules.collectColor]);}
   get jellyLeft() { return this.jelly.reduce((a, b) => a + b, 0); }
   get stars() { return this.score >= this.rules.target * 1.8 ? 3 : this.score >= this.rules.target * 1.35 ? 2 : this.score >= this.rules.target ? 1 : 0; }
 
@@ -143,7 +151,7 @@ export class CandyGame {
       }
     }
     const earned = cleared.size * 40 * Math.min(chain, 4) + creations.length * 100;
-    cleared.forEach(i => { this.jelly[i] = 0; });
+    cleared.forEach(i => { this.jelly[i] = Math.max(0,this.jelly[i]-1);if(this.board[i])this.collected[this.board[i].color]++; });
     this.score += earned;
     frames.push({ type: 'clear', board: clone(this.board), jelly: [...this.jelly], cells: [...cleared], score: this.score, earned, chain, label, creations });
     cleared.forEach(i => { this.board[i] = null; });
@@ -175,7 +183,7 @@ export class CandyGame {
       chain++;
     }
     if (runs.length) { this.board = this.freshBoard(); frames.push({ type: 'shuffle', board: clone(this.board), jelly: [...this.jelly] }); }
-    if (this.score >= this.rules.target && !this.jellyLeft) this.status = 'won';
+    if (this.score >= this.rules.target && !this.jellyLeft && !this.collectionLeft) this.status = 'won';
     else if (this.moves <= 0) this.status = 'lost';
     else if (!availableMoves(this.board).length) this.reshuffle(frames);
     return { accepted: true, frames, status: this.status };

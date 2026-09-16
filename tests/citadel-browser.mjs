@@ -57,10 +57,10 @@ try{
       await page.locator('#pause').click();await page.locator('#menu-button').click();await page.clock.runFor(100);assert.ok(await page.locator('#menu').isVisible());
       if(name==='phone'){
         await page.clock.resume();await context.setOffline(true);await page.reload();await page.locator('#start').click();await page.waitForFunction(()=>document.querySelector('#game').dataset.phase==='playing');
-        await page.getByRole('link',{name:'Back to Tishaan’s Game Zone'}).click();assert.equal(await page.title(),'Tishaan’s Game Zone');
+        await page.getByRole('link',{name:'Back to Tishaan’s Game Zone'}).click();assert.match(await page.title(),/^Tishaan’s Game Zone/);
         await page.getByRole('link',{name:'Play Iron Citadel',exact:true}).click();assert.ok(await page.locator('#start').isVisible());await context.setOffline(false);
       }
-      await page.getByRole('link',{name:'Back to Tishaan’s Game Zone'}).click();assert.equal(await page.title(),'Tishaan’s Game Zone');assert.deepEqual(errors,[]);
+      await page.getByRole('link',{name:'Back to Tishaan’s Game Zone'}).click();assert.match(await page.title(),/^Tishaan’s Game Zone/);assert.deepEqual(errors,[]);
       console.log(`PASS Iron Citadel ${name}: hub launch, layout, combat, movement, reload, weapons, map, pause, retry, return${name==='phone'?', offline round trip':''}`);
     }finally{await browser.close();}
   }

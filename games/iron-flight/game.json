@@ -1,9 +1,10 @@
 {
   "name": "Iron Flight",
-  "description": "Fly through the skyline, dodge enemy drones, and collect glowing energy cores to beat your best score.",
+  "description": "Take flight above the city. Weave through rings, fight drones and face skyborne bosses with your chosen suit module.",
   "category": "Action",
   "players": "Solo",
-  "detail": "Hold to fly · Release to drop",
+  "detail": "12 flights · 3 suit modules",
   "icon": "icon.svg",
-  "cover": "cover.svg"
+  "cover": "cover.webp",
+  "featured": true
 }

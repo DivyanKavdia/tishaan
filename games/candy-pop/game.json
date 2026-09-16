@@ -1,10 +1,10 @@
 {
   "name": "Candy Pop",
-  "description": "Swap colorful candies, pop jelly, and create sweet combos on a trail of 24 magical match-three puzzles.",
+  "description": "Glossy candies, layered crystal jelly and colourful recipes. Make clever combos across six delicious worlds.",
   "category": "Puzzle",
   "players": "Solo",
-  "detail": "24 levels · Swipe to match",
+  "detail": "36 levels · 3 challenges",
   "icon": "icon.svg",
-  "cover": "cover.svg",
-  "featured": true
+  "cover": "cover.webp",
+  "featured": false
 }

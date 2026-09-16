@@ -1,9 +1,10 @@
 {
   "name": "Chikoo & Bunty: Mischief Chase",
-  "description": "Race through the neighbourhood, dodge obstacles, and collect stars and laddoos in a mischievous chase.",
+  "description": "Race through sunlit streets. Jump hurdles, slide under banners and dash for laddoos in a three-lane chase.",
   "category": "Action",
   "players": "Solo",
-  "detail": "Jump, dodge, and collect",
+  "detail": "12 runs · 2 playable brothers",
   "icon": "icon.svg",
-  "cover": "cover.svg"
+  "cover": "cover.webp",
+  "featured": false
 }

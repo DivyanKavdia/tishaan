@@ -28,6 +28,20 @@ export const LEVELS = [
     items: [[2.5,18.5,'health'],[6.5,14.5,'ammo'],[2.5,10.5,'treasure'],[10.5,10.5,'health'],[13.5,18.5,'ammo'],[18.5,9.5,'ammo'],[2.5,2.5,'health'],[18.5,5.5,'health'],[10.5,5.5,'ammo']] }
 ];
 
+// Later chapters revisit the fortress from different entrances and approach angles.
+const baseMissions=LEVELS.map(l=>JSON.parse(JSON.stringify(l)));
+for(let chapter=1;chapter<3;chapter++)for(let i=0;i<3;i++){
+ const spec=JSON.parse(JSON.stringify(baseMissions[i])),n=spec.size,mirrorX=chapter===1;
+ const tile=([x,y,...rest])=>[mirrorX?n-1-x:x,mirrorX?y:n-1-y,...rest];
+ const center=([x,y,...rest])=>[mirrorX?n-x:x,mirrorX?y:n-y,...rest];
+ const rect=([x,y,w,h])=>[mirrorX?n-x-w:x,mirrorX?y:n-y-h,w,h];
+ spec.rooms=spec.rooms.map(rect);spec.halls=spec.halls.map(rect);spec.doors=spec.doors.map(tile);spec.pillars=spec.pillars.map(tile);spec.exit=tile(spec.exit);spec.key=center(spec.key);spec.guards=spec.guards.map(center);spec.items=spec.items.map(center);
+ spec.start=[...center(spec.start.slice(0,2)),mirrorX?Math.PI-spec.start[2]:-spec.start[2]];
+ spec.name=['The Archives','Cooling Halls','Reactor Warden','Maintenance Ring','Signal Vault','The Core'][((chapter-1)*3)+i];
+ spec.subtitle=['Recover the lost archive key','Secure the cooling network','Disable the reactor guardian','Enter through the service tunnels','Retrieve the master access key','Shut down the final core'][((chapter-1)*3)+i];
+ spec.tier=chapter;LEVELS.push(spec);
+}
+
 export function buildLevel(index) {
   const spec = LEVELS[index];
   const grid = Array.from({ length: spec.size }, () => Array(spec.size).fill(spec.wall));
@@ -94,6 +108,7 @@ export class Game {
   emit(type,data={}){this.events.push({type,...data});}
   loadLevel(index) {
     this.levelIndex=index; this.level=buildLevel(index);
+    if(index>=3)for(const e of this.level.enemies)e.hp=e.maxHp=Math.round(e.hp*(1+(index-2)*.09));
     [this.player.x,this.player.y,this.player.a]=this.level.spec.start;
     this.player.key=false; this.player.hp=Math.max(75,this.player.hp);
     this.player.ammo=12; this.player.reserve=Math.max(48,this.player.reserve);
@@ -197,7 +212,7 @@ export class Game {
         e.windup-=dt;
         if(e.windup<=0){
           if(visible&&distance(p,e.target)<(this.difficulty==='explorer'?.64:.9)){
-            const damage=(e.type==='boss'?18:e.type==='scout'?7:10)*(this.difficulty==='explorer'?.6:1);
+            const damage=(e.type==='boss'?18:e.type==='scout'?7:10)*(this.difficulty==='explorer'?.6:this.difficulty==='veteran'?1.3:1)*(1+Math.max(0,this.levelIndex-2)*.035);
             p.hp=Math.max(0,p.hp-damage);this.hurt=.28;this.emit('hurt');
             if(p.hp<=0){this.phase='dead';this.emit('dead');break;}
           }
@@ -205,7 +220,7 @@ export class Game {
         }
         continue;
       }
-      if(visible&&d<7&&e.cooldown<=0){e.windup=this.difficulty==='explorer'?.85:.6;e.target={x:p.x,y:p.y};continue;}
+      if(visible&&d<7&&e.cooldown<=0){e.windup=this.difficulty==='explorer'?.85:this.difficulty==='veteran'?.45:.6;e.target={x:p.x,y:p.y};continue;}
       if(d>(visible?2.2:.7)){
         let tx=p.x,ty=p.y;
         if(!visible){

@@ -83,13 +83,13 @@ try {
     await page.reload(); assert.match(await page.locator('#modal-title').textContent(),/Welcome back/); await begin(page);
     assert.deepEqual((await state(page)).active,beforeReload);
     await page.locator('#help').click(); assert.match(await page.locator('#modal-content').textContent(),/pink jelly/); await page.locator('#modal-primary').click();
-    await page.locator('#map').click(); assert.equal(await page.locator('.level-choice').count(),24); assert.equal(await page.locator('.level-choice:disabled').count(),23); await page.locator('#modal-close').click();
+    await page.locator('#map').click(); assert.equal(await page.locator('.level-choice').count(),36); assert.equal(await page.locator('.level-choice:disabled').count(),35); await page.locator('#modal-close').click();
     await page.locator('#restart').click(); await page.locator('#modal-secondary').click(); assert.deepEqual((await state(page)).active,beforeReload);
     if(name==='phone') {
       await page.waitForFunction(async()=>{const r=await navigator.serviceWorker.getRegistration(location.href);return r?.scope.endsWith('/games/candy-pop/')&&r.active?.state==='activated';});
       await context.setOffline(true); await page.reload(); await begin(page);
       assert.deepEqual((await state(page)).active,beforeReload);
-      await page.getByRole('link',{name:'Back to Tishaan’s Game Zone'}).click(); assert.equal(await page.title(),'Tishaan’s Game Zone');
+      await page.getByRole('link',{name:'Back to Tishaan’s Game Zone'}).click(); assert.match(await page.title(),/^Tishaan’s Game Zone/);
       await page.getByRole('link',{name:'Play Candy Pop',exact:true}).click(); await begin(page);
       assert.deepEqual((await state(page)).active,beforeReload);
       assert.ok(await page.evaluate(async()=>{const c=await caches.keys();return c.some(k=>k.startsWith('tishaan-game-zone-'))&&c.some(k=>k.startsWith('tishaan-candy-pop-'));}));
