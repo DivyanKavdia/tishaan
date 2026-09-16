@@ -1,9 +1,9 @@
 {
   "name": "Monterra Wilds",
-  "description": "Explore a living 3D island. Befriend elemental creatures, evolve your team and challenge six powerful guardians.",
+  "description": "Explore a living 3D island, track elemental creatures, complete field missions, duel roaming rivals, evolve your team and unlock an apex hunt.",
   "category": "Adventure",
   "players": "Solo",
-  "detail": "6 guardians · 15 creature forms",
+  "detail": "Field missions · Rival duels · Apex hunt · 15 creature forms",
   "icon": "icon.svg",
   "cover": "cover.webp",
   "featured": true
