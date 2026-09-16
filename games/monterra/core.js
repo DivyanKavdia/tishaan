@@ -1,5 +1,5 @@
 /* Gameplay rules are independent of rendering so progression and save handling are testable. */
-export const VERSION='4.0.0';
+export const VERSION='5.0.0';
 export const SAVE_KEY='monterra-wilds-save-v3';
 export const FAMILIES=[
  {type:'Flame',names:['Embercub','Pyrolynx','Volcarion'],color:'#ed8b4b',accent:'#ffd379',move:'Ember rush',strong:1,weak:2,description:'A fearless fire cub. Its tiny tail flame grows into blazing wings.'},
