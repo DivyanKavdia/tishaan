@@ -1,5 +1,17 @@
 [
   {
+    "slug": "pride-lands",
+    "name": "Pride Lands",
+    "description": "Become a lion of the savanna. Hunt for strength, defend your pride, roar down rival packs and rise through twelve cinematic missions.",
+    "category": "Adventure",
+    "players": "Solo",
+    "detail": "12 missions · 3 lions · survival combat",
+    "icon": "./games/pride-lands/icon.svg",
+    "cover": "./games/pride-lands/cover.svg",
+    "href": "./games/pride-lands/",
+    "featured": true
+  },
+  {
     "slug": "avengers-arena",
     "name": "Avengers Arena",
     "description": "Four heroes. A rooftop tournament. Master combos, choose a combat perk and climb twelve increasingly demanding battles.",
